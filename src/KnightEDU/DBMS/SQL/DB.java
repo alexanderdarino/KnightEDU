@@ -8,22 +8,22 @@ package KnightEDU.DBMS.SQL;
 import KnightEDU.DBMS.Query;
 import KnightEDU.DBMS.Query.Component;
 import KnightEDU.DBMS.Section;
-import KnightEDU.courses.Course;
-import KnightEDU.courses.CourseID;
-import KnightEDU.courses.Credits;
-import KnightEDU.courses.Grade.Type;
-import KnightEDU.courses.Term;
-import KnightEDU.courses.classes.Class;
-import KnightEDU.courses.classes.Component.Offering;
-import KnightEDU.courses.classes.Days;
-import KnightEDU.courses.classes.Location;
+import KnightEDU.Course;
+import KnightEDU.CourseID;
+import KnightEDU.Credits;
+import KnightEDU.Grade.Type;
+import KnightEDU.Term;
+import KnightEDU.Class;
+import KnightEDU.Component.Offering;
+import KnightEDU.Days;
+import KnightEDU.Location;
 import java.util.Set;
 
 /**
  *
  * @author Alexander Darino
  */
-public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, KnightEDU.DBMS.Class, KnightEDU.DBMS.ComponentOffering{
+public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, KnightEDU.DBMS.Class, KnightEDU.DBMS.ComponentOffering, KnightEDU.DBMS.Component{
 
 
 
@@ -82,12 +82,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
         return isValidCoursePrefix(prefix) && isValidCourseNumber(number) && isValidCourseSuffix(suffix);
     }
 
-    public KnightEDU.courses.Course addCourseID(String prefix, String number, String suffix, String name, String description, Credits credits, Type gradeType)
-    {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public Set<Course> queryCourse(Query.Course query)
+    public KnightEDU.Course addCourseID(String prefix, String number, String suffix, String name, String description, Credits credits, Type gradeType)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -122,11 +117,6 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Set<Section> querySection(Query.Section query)
-    {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public boolean containsSection(String sectionID)
     {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -137,7 +127,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Set<KnightEDU.DBMS.Course> queryCourse(String whereClause, String groupByClause, String havingClause)
+    public Set<KnightEDU.Course> queryCourse(String whereClause, String groupByClause, String havingClause)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -218,6 +208,56 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
     }
 
     public void removeComponentOffering(int componentID, int sectionID)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Query.Section querySection()
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Set<KnightEDU.Section> querySection(String whereClause, String groupByClause, String havingClause)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public KnightEDU.Component addComponent(KnightEDU.Component.Type type)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean containsComponent(int componentID)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public KnightEDU.Component getComponent(int componentID)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Component queryComponent()
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Set<KnightEDU.Component> queryComponent(String whereClause, String groupByClause, String havingClause)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void removeComponent(int componentID)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void updateComponentOffering(Offering componentOffering)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void updateComponent(KnightEDU.Component component)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }

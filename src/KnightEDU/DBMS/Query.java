@@ -87,7 +87,7 @@ public class Query {
     public static class Course
     {
         protected final KnightEDU.DBMS.Course DBMS;
-        protected String courseIDQuery, nameQuery, descriptionQuery;
+        protected String courseIDQuery = "", nameQuery = "", descriptionQuery ="";
 
         protected Course(KnightEDU.DBMS.Course DBMS)
         {
@@ -107,7 +107,7 @@ public class Query {
         
         public Query.Course descriptionContains(String description)
         {
-            nameQuery = "name LIKE '%" + description + "%'";
+            descriptionQuery = "description LIKE '%" + description + "%'";
             return this;
         }
 
@@ -116,7 +116,7 @@ public class Query {
             this.courseIDQuery = courseIDQuery;
         }
 
-        public Set<KnightEDU.courses.Course> build()
+        public Set<KnightEDU.Course> build()
         {
             return DBMS.queryCourse(courseIDQuery, courseIDQuery, nameQuery);
         }

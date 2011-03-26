@@ -5,7 +5,7 @@
 
 package KnightEDU.DBMS;
 
-import KnightEDU.courses.classes.Component;
+import KnightEDU.Component;
 import java.util.Set;
 
 /**
@@ -19,5 +19,6 @@ public interface ComponentOffering {
     public Query.Component.Offering queryComponentOffering();
     public Set<Component.Offering> queryComponentOffering(String whereClause, String groupByClause, String havingClause);
     public void removeComponentOffering (int componentID, int sectionID);
+    public void updateComponentOffering(KnightEDU.Component.Offering componentOffering);
 
 }
