@@ -18,6 +18,7 @@ import KnightEDU.Component.Offering;
 import KnightEDU.Days;
 import KnightEDU.Location;
 import java.util.Set;
+import java.sql.*;
 
 /**
  *
@@ -36,6 +37,14 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
      * Maximum suffix length
      */
     protected final int SUFFIX_LENGTH;
+
+    protected String driver = "org.apache.derby.jdbc.EmbeddedDriver";
+
+    protected String dbName="universityDB";
+
+    protected String connectionURL = "jdbc:derby:" + dbName + ";create=true";
+
+    protected Connection conn = null;
 
     /**
      * Determines if the specified string is a valid course number.
@@ -129,6 +138,14 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
 
     public Set<KnightEDU.Course> queryCourse(String whereClause, String groupByClause, String havingClause)
     {
+        Statement s;
+        ResultSet myCourses;
+        
+        s = conn.createStatement();
+        String queryString = "select * from COURSE" + whereClause;
+        myCourses = s.executeQuery(queryString);
+
+
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -262,4 +279,42 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    protected DB()
+    {
+        try
+        {
+        Class.forName(driver);
+        }catch(java.lang.ClassNotFoundException e)     {
+          System.err.print("ClassNotFoundException: ");
+          System.err.println(e.getMessage());
+          System.out.println("\n    >>> Please check your CLASSPATH variable   <<<\n");
+        }
+
+        try {
+            // Create (if needed) and connect to the database
+            conn = DriverManager.getConnection(connectionURL);
+        } catch (Throwable e)  {
+        }
+    }
+
+    protected void closeDB()
+    {
+
+         conn.close();
+         if (driver.equals("org.apache.derby.jdbc.EmbeddedDriver")) {
+               boolean gotSQLExc = false;
+               try {
+                  DriverManager.getConnection("jdbc:derby:;shutdown=true");
+               } catch (SQLException se)  {
+                  if ( se.getSQLState().equals("XJ015") ) {
+                     gotSQLExc = true;
+                  }
+               }
+               if (!gotSQLExc) {
+               	  System.out.println("Database did not shut down normally");
+               }  else  {
+                  System.out.println("Database shut down normally");
+               }
+            }
+    }
 }
