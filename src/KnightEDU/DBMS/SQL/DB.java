@@ -6,10 +6,15 @@
 package KnightEDU.DBMS.SQL;
 
 import KnightEDU.DBMS.Query;
+import KnightEDU.DBMS.Query.Component;
 import KnightEDU.DBMS.Section;
 import KnightEDU.courses.Course;
+import KnightEDU.courses.CourseID;
 import KnightEDU.courses.Credits;
 import KnightEDU.courses.Grade.Type;
+import KnightEDU.courses.Term;
+import KnightEDU.courses.classes.Class;
+import KnightEDU.courses.classes.Component.Offering;
 import KnightEDU.courses.classes.Days;
 import KnightEDU.courses.classes.Location;
 import java.util.Set;
@@ -18,7 +23,7 @@ import java.util.Set;
  *
  * @author Alexander Darino
  */
-public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section{
+public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, KnightEDU.DBMS.Class, KnightEDU.DBMS.ComponentOffering{
 
 
 
@@ -107,17 +112,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section{
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Course removeCourse(String courseID)
-    {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public Section addSection(Days days, Location location, int timeStart, int timeEnd)
-    {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public Section removeSection(String sectionID)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -138,6 +133,91 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section{
     }
 
     public void updateSection(Section section)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Set<KnightEDU.DBMS.Course> queryCourse(String whereClause, String groupByClause, String havingClause)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Query.Course queryCourse()
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Class addClass(CourseID courseID, Term term, int year, int primaryComponentID)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Class getClass(CourseID courseID, Term term, int year)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean containsClass(CourseID courseID, Term term, int year)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void updateClass(Class classObj)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Set<Class> queryClass(String whereClause, String groupByClause, String havingClause)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Query.Class queryClass()
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void removeCourse(String courseID)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void removeSection(String sectionID)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void removeClass(CourseID courseID, Term term, int year)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Offering addComponentOffering(int componentID, int sectionID, int sectionNumber, int capacity)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean containsComponentOffering(int componentID, int sectionID)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Offering getComponentOffering(int componentID, int sectionID)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Component.Offering queryComponentOffering()
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Set<Offering> queryComponentOffering(String whereClause, String groupByClause, String havingClause)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void removeComponentOffering(int componentID, int sectionID)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }

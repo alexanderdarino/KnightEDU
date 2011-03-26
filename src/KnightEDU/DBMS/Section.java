@@ -11,7 +11,7 @@ import java.util.Set;
 public interface Section {
 
     public Section addSection(Days days, Location location, int timeStart, int timeEnd);
-    public Section removeSection(String sectionID);
+    public void removeSection(String sectionID);
     public Section getSection(String sectionID);
     public Set<Section> querySection(Query.Section query);
     public boolean containsSection(String sectionID);

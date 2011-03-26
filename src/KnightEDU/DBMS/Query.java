@@ -1,8 +1,11 @@
 package KnightEDU.DBMS;
 
+import KnightEDU.DBMS.Query.CourseID.PNS;
+import java.util.Set;
+
 public class Query {
 
-    public static class CourseID
+    protected static class CourseID
     {
         private final KnightEDU.DBMS.Course DBMS;
 
@@ -13,7 +16,7 @@ public class Query {
 
         protected CourseID(){DBMS = null;}
 
-        protected static class PNS extends CourseID
+        public static class PNS extends CourseID
         {
             protected final KnightEDU.DBMS.Course.PNS DBMS;
             protected final Query.Course builder;
@@ -91,9 +94,9 @@ public class Query {
             this.DBMS = DBMS;
         }
 
-        public Query.CourseID specifyCourseID()
+        public Query.CourseID.PNS specifyCourseID()
         {
-            return new Query.CourseID(DBMS);
+            return (PNS) new Query.CourseID(DBMS);
         }
 
         public Query.Course nameContains(String name)
@@ -113,14 +116,38 @@ public class Query {
             this.courseIDQuery = courseIDQuery;
         }
 
-        public String build()
+        public Set<KnightEDU.courses.Course> build()
         {
-            throw new UnsupportedOperationException("Not yet implemented.");
+            return DBMS.queryCourse(courseIDQuery, courseIDQuery, nameQuery);
         }
     }
 
     public static class Section
     {
         
+    }
+
+    public static class Class
+    {
+
+        public Class()
+        {
+        }
+    }
+
+    public static class Component
+    {
+
+        public static class Offering
+        {
+
+            public Offering()
+            {
+            }
+        }
+
+        public Component()
+        {
+        }
     }
 }
