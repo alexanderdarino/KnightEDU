@@ -19,6 +19,8 @@ import KnightEDU.Days;
 import KnightEDU.Location;
 import java.util.Set;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -40,7 +42,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
 
     protected String driver = "org.apache.derby.jdbc.EmbeddedDriver";
 
-    protected String dbName="universityDB";
+    protected String dbName="C:\\universityDB";
 
     protected String connectionURL = "jdbc:derby:" + dbName + ";create=true";
 
@@ -138,20 +140,29 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
 
     public Set<KnightEDU.Course> queryCourse(String whereClause, String groupByClause, String havingClause)
     {
-        Statement s;
-        ResultSet myCourses;
-        
-        s = conn.createStatement();
-        String queryString = "select * from COURSE" + whereClause;
-        myCourses = s.executeQuery(queryString);
-
-
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            Statement s;
+            ResultSet myCourses;
+            s = conn.createStatement();
+            String queryString = "select * from COURSE";
+            if (whereClause != null && !whereClause.equals(""))
+                queryString += " WHERE " + whereClause;
+            myCourses = s.executeQuery(queryString);
+            while (myCourses.next())
+            {
+                System.out.println(myCourses.getString("name"));
+            }
+            return null;
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     public Query.Course queryCourse()
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new Query.Course(this);
     }
 
     public Class addClass(CourseID courseID, Term term, int year, int primaryComponentID)
@@ -279,11 +290,14 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    protected DB()
+    public DB(int CourseIDPrefixLength, int CourseIDNumberLength, int CourseIDSuffixLength)
     {
+        PREFIX_LENGTH = CourseIDPrefixLength;
+        NUMBER_LENGTH = CourseIDNumberLength;
+        SUFFIX_LENGTH = CourseIDSuffixLength;
         try
         {
-        Class.forName(driver);
+        java.lang.Class.forName(driver);
         }catch(java.lang.ClassNotFoundException e)     {
           System.err.print("ClassNotFoundException: ");
           System.err.println(e.getMessage());
@@ -297,7 +311,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
         }
     }
 
-    protected void closeDB()
+    protected void closeDB() throws SQLException
     {
 
          conn.close();
@@ -317,4 +331,5 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
                }
             }
     }
+
 }
