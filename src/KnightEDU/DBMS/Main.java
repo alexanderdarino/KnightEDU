@@ -7,7 +7,7 @@ public class Main {
 
     public static void main (String args[])
     {
-        DB db = new DB();
-     courseQuery.nameContains("Security").descriptionContains("viruses").build();
+        DB db = new DB(3,4,1);
+        db.queryCourse().descriptionContains("virus").build();
     }
 }

@@ -89,7 +89,7 @@ public class Query {
         protected final KnightEDU.DBMS.Course DBMS;
         protected String courseIDQuery = "", nameQuery = "", descriptionQuery ="";
 
-        protected Course(KnightEDU.DBMS.Course DBMS)
+        public Course(KnightEDU.DBMS.Course DBMS)
         {
             this.DBMS = DBMS;
         }
@@ -118,7 +118,16 @@ public class Query {
 
         public Set<KnightEDU.Course> build()
         {
-            return DBMS.queryCourse(courseIDQuery, courseIDQuery, nameQuery);
+            boolean hasPrevious = false;
+            String whereClause = courseIDQuery;
+            if (hasPrevious) whereClause += " AND ";
+            if (nameQuery != null && !nameQuery.equals(""))
+                whereClause += nameQuery;
+
+            if (hasPrevious) whereClause += " AND ";
+            if (descriptionQuery != null && !descriptionQuery.equals(""))
+                whereClause +=  descriptionQuery;
+            return DBMS.queryCourse(whereClause, "", "");
         }
     }
 

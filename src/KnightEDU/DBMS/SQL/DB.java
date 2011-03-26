@@ -138,13 +138,13 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Set<KnightEDU.Course> queryCourse(String whereClause, String groupByClause, String havingClause)
+    private ResultSet query(String tables, String whereClause, String groupByClause, String havingClause)
     {
         try {
             Statement s;
             ResultSet myCourses;
             s = conn.createStatement();
-            String queryString = "select * from COURSE";
+            String queryString = "select * from " + tables;
             if (whereClause != null && !whereClause.equals(""))
                 queryString += " WHERE " + whereClause;
             myCourses = s.executeQuery(queryString);
@@ -157,6 +157,16 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
         catch (SQLException ex) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return null;
+    }
+
+    public Set<KnightEDU.Course> queryCourse(String whereClause, String groupByClause, String havingClause)
+    {
+        query("Course", whereClause, groupByClause, havingClause);
+        //java.util.MAP map = con.getTypeMap();
+        //map.put("SchemaName.ADDRESS", Address.class);
+        //rs.next();
+        //Struct address = (Struct)rs.getObject("LOCATION");
         return null;
     }
 
