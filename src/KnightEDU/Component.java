@@ -11,7 +11,7 @@ public class Component
     /**
 
      */
-    protected final int componentGroupID;
+    protected final int componentID;
 
     /**
 
@@ -74,7 +74,7 @@ public class Component
      */
     public int getID()
     {
-        return componentGroupID;
+        return componentID;
     }
     /**
      */
@@ -87,14 +87,14 @@ public class Component
 
     /**
 
-     @param componentGroupID
+     @param componentID
      @param courseOffering
      @param label
      @param type
      */
     public Component(int componentGroupID, Type type)
     {
-        this.componentGroupID = componentGroupID;
+        this.componentID = componentGroupID;
         this.type = type;
     }
 
