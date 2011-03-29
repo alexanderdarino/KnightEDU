@@ -1,5 +1,6 @@
 package KnightEDU.DBMS.SQL;
 
+import KnightEDU.DBMS.SQL.DB;
 import KnightEDU.DBMS.SQL.Query.CourseID.PNS;
 import java.util.Set;
 

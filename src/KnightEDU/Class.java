@@ -1,127 +1,71 @@
 package KnightEDU;
 
-import KnightEDU.CourseID;
-import KnightEDU.Term;
-import java.util.ArrayList;
-import java.util.Collections;
-/**
- *
- * @author Alexander Darino
- */
 public class Class
 {
     /**
 
-     @param courseID
-     @param term
-     @param year
-     @param primaryComponentGroupID
      */
-    public Class(CourseID courseID, Term term, int year, int primaryComponentGroupID)
+    protected final int ID;
+
+    public int getID() {
+        return ID;
+    }
+
+    /**
+
+     */
+    protected final int sectionID;
+    /**
+
+     */
+    protected final int sectionNumber;
+
+    /**
+     *
+     */
+    protected int capacity;
+
+    /**
+     *
+     * @return
+     */
+    public int getCapacity()
     {
-        this.courseID = courseID;
-        this.term = term;
-        this.year = year;
-        this.componentGroupIDs.add(primaryComponentGroupID);
+        return capacity;
+    }
+
+
+
+    /**
+
+     @return
+     */
+    public int getSectionID()
+    {
+        return sectionID;
     }
 
     /**
 
      @return
      */
-    public int componentsTotal()
+    public int getSectionNumber()
     {
-        return componentGroupIDs.size();
-    }
-    /**
-     * The course this class covers
-     */
-    protected CourseID courseID;
-    /**
-
-     */
-    protected Term term;
-    /**
-     
-     */
-    protected int year;
-
-
-    /**
-
-     */
-    protected ArrayList<Integer> componentGroupIDs = new ArrayList();
-
-    /**
-
-     @return
-     */
-    public Term getTerm()
-    {
-        return term;
+        return sectionNumber;
     }
 
     /**
 
-     @return
+     @param componentID
+     @param sectionID
+     * @param sectionNumber
+     * @param capacity
      */
-    public int getYear()
+    public Class(int ID, int sectionID, int sectionNumber, int capacity)
     {
-        return year;
-    }
-
-    /**
-
-     @return
-     */
-    public CourseID getCourseID()
-    {
-        return courseID;
-    }
-
-    /**
-
-     @return
-     */
-    public ArrayList<Integer> getComponentGroupIDs()
-    {
-        return (ArrayList<Integer>) Collections.unmodifiableList(componentGroupIDs);
-    }
-
-    /**
-
-     */
-    public static class PrimaryComponentGroupNotEmptyException extends Exception
-    {
-
-    }
-
-    /**
-
-     @param componentGroupID
-     */
-    public void addComponentGroup(int componentGroupID)
-    {
-        if (!componentGroupIDs.contains(componentGroupID))
-            componentGroupIDs.add(componentGroupID);
-    }
-
-    /**
-
-     @param componentGroupID
-     */
-    public void removeComponentGroup(int componentGroupID)
-    {
-        componentGroupIDs.remove(componentGroupID);
-    }
-
-    /**
-
-     @param componentGroupID
-     @return
-     */
-    public boolean containsComponentGroup(int componentGroupID)
-    {
-        return componentGroupIDs.contains(componentGroupID);
+        this.ID = ID;
+        this.sectionID = sectionID;
+        this.sectionNumber = sectionNumber;
+        this.capacity = capacity;
     }
 }

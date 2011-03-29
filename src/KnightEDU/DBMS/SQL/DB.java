@@ -13,7 +13,7 @@ import KnightEDU.Credits;
 import KnightEDU.Grade.Type;
 import KnightEDU.Term;
 import KnightEDU.Class;
-import KnightEDU.Component.Offering;
+import KnightEDU.Component.Class;
 import KnightEDU.Days;
 import KnightEDU.Location;
 import java.util.Set;
@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  *
  * @author Alexander Darino
  */
-public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, KnightEDU.DBMS.Class, KnightEDU.DBMS.ComponentOffering, KnightEDU.DBMS.Component{
+public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, KnightEDU.DBMS.CourseOffering, KnightEDU.DBMS.Class, KnightEDU.DBMS.Component{
 
 
 
@@ -417,7 +417,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
      * @param primaryComponentID
      * @return
      */
-    public Class addClass(CourseID courseID, Term term, int year, int primaryComponentID)
+    public Class addCourseOffering(CourseID courseID, Term term, int year, int primaryComponentID)
     {
          try {
             PreparedStatement psInsert;
@@ -442,7 +442,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
      * @param year
      * @return
      */
-    public Class getClass(CourseID courseID, Term term, int year)
+    public Class getCourseOffering(CourseID courseID, Term term, int year)
     {
          try {
             Statement s;
@@ -475,7 +475,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
      * @param year
      * @return
      */
-    public boolean containsClass(CourseID courseID, Term term, int year)
+    public boolean containsCourseOffering(CourseID courseID, Term term, int year)
     {
         try {
             Statement s;
@@ -506,7 +506,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
      *
      * @param classObj
      */
-    public void updateClass(Class classObj)
+    public void updateCourseOffering(Class classObj)
     {
         try {
             PreparedStatement psUpdate;
@@ -542,7 +542,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
      *
      * @return
      */
-    public Query.Class queryClass()
+    public Query.Class queryCourseOffering()
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -589,7 +589,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
      * @param term
      * @param year
      */
-    public void removeClass(CourseID courseID, Term term, int year)
+    public void removeCourseOffering(CourseID courseID, Term term, int year)
     {
         try {
             PreparedStatement psDelete;
@@ -613,7 +613,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
      * @param capacity
      * @return
      */
-    public Offering addComponentOffering(int componentID, int sectionID, int sectionNumber, int capacity)
+    public Class addComponentOffering(int componentID, int sectionID, int sectionNumber, int capacity)
     {
          try {
             PreparedStatement psInsert;
@@ -668,7 +668,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
      * @param sectionID
      * @return
      */
-    public Offering getComponentOffering(int componentID, int sectionID)
+    public Class getComponentOffering(int componentID, int sectionID)
     {
          try {
             Statement s;
@@ -708,7 +708,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
      * @param havingClause
      * @return
      */
-    public Set<Offering> queryComponentOffering(String whereClause, String groupByClause, String havingClause)
+    public Set<Class> queryComponentOffering(String whereClause, String groupByClause, String havingClause)
     {
          query("ComponentOffering", whereClause, groupByClause, havingClause);
         //throw new UnsupportedOperationException("Not supported yet.");
@@ -882,7 +882,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
      *
      * @param componentOffering
      */
-    public void updateComponentOffering(Offering componentOffering)
+    public void updateComponentOffering(Class componentOffering)
     {
         try {
             PreparedStatement psUpdate;

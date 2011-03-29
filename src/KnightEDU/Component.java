@@ -15,12 +15,12 @@ public class Component
 
     /**
 
-     @param component
+     @param classObj
      @return
      */
-    public boolean addOffering(Offering component)
+    public boolean addClass(Class classObj)
     {
-        return components.add(component);
+        return components.add(classObj);
     }
 
     /**
@@ -28,9 +28,9 @@ public class Component
      @param componentID
      @return
      */
-    public boolean removeOffering(int componentID)
+    public boolean removeClass(int classID)
     {
-        Offering toRemove = getOffering(componentID);
+        Class toRemove = getClass(classID);
         if (toRemove == null) return false;
         return components.remove(toRemove);
     }
@@ -40,9 +40,9 @@ public class Component
      @param componentID
      @return
      */
-    public boolean containsOffering(int componentID)
+    public boolean containsClass(int classID)
     {
-        Offering r_val = getOffering(componentID);
+        Class r_val = getClass(classID);
         return r_val != null ? true : false;
     }
 
@@ -51,11 +51,11 @@ public class Component
      @param componentID
      @return
      */
-    public Offering getOffering(int componentID)
+    public Class getClass(int classID)
     {
-        for (Offering i : components)
+        for (Class i : components)
         {
-            if (i.getComponentID() == componentID)
+            if (i.getID() == classID)
                 return i;
         }
         return null;
@@ -65,9 +65,9 @@ public class Component
      *
      * @return
      */
-    public Offering[] getOfferings()
+    public Class[] getClasses()
     {
-        return (Offering[]) components.toArray();
+        return (Class[]) components.toArray();
     }
 
     
@@ -83,7 +83,7 @@ public class Component
     /**
      */
     //protected TreeSet<Offering> components = new TreeSet();
-    protected ArrayList<Offering> components = new ArrayList();
+    protected ArrayList<Class> components = new ArrayList();
     /**
      */
     protected Type type;
@@ -94,9 +94,9 @@ public class Component
      * @param componentGroupID
      * @param type
      */
-    public Component(int componentGroupID, Type type)
+    public Component(int componentID, Type type)
     {
-        this.componentID = componentGroupID;
+        this.componentID = componentID;
         this.type = type;
     }
 
@@ -106,83 +106,6 @@ public class Component
     public Type getType()
     {
         return type;
-    }
-
-    /**
-     *
-     */
-    public static class Offering
-    {
-        /**
-
-         */
-        protected final int componentID;
-
-        /**
-
-         @return
-         */
-        public int getComponentID()
-        {
-            return componentID;
-        }
-        /**
-
-         */
-        protected final int sectionID;
-        /**
-
-         */
-        protected final int sectionNumber;
-
-        /**
-         *
-         */
-        protected int capacity;
-
-        /**
-         *
-         * @return
-         */
-        public int getCapacity()
-        {
-            return capacity;
-        }
-
-
-
-        /**
-
-         @return
-         */
-        public int getSectionID()
-        {
-            return sectionID;
-        }
-
-        /**
-
-         @return
-         */
-        public int getSectionNumber()
-        {
-            return sectionNumber;
-        }
-
-        /**
-
-         @param componentID
-         @param sectionID
-         * @param sectionNumber
-         * @param capacity
-         */
-        public Offering(int componentID, int sectionID, int sectionNumber, int capacity)
-        {
-            this.componentID = componentID;
-            this.sectionID = sectionID;
-            this.sectionNumber = sectionNumber;
-            this.capacity = capacity;
-        }
     }
 
     /**

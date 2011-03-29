@@ -1,9 +1,13 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package KnightEDU.DBMS;
 
-import KnightEDU.DBMS.SQL.Query;
 import KnightEDU.CourseID;
+import KnightEDU.DBMS.SQL.Query;
 import KnightEDU.Term;
-import java.util.Set;
 
 /**
  *
@@ -11,53 +15,106 @@ import java.util.Set;
  */
 public interface Class {
     /**
-     * 
-     * @param courseID
-     * @param term
-     * @param year
-     * @param primaryComponentID
+     *
+     * @param componentID
+     * @param sectionID
+     * @param sectionNumber
+     * @param capacity
      * @return
      */
-    public KnightEDU.Class addClass(CourseID courseID, Term term, int year, int primaryComponentID);
+    public KnightEDU.Class addClass(int classID, int sectionID, int sectionNumber, int capacity);
     /**
      *
-     * @param courseID
-     * @param term
-     * @param year
-     */
-    public void removeClass(CourseID courseID, Term term, int year);
-    /**
-     *
-     * @param courseID
-     * @param term
-     * @param year
+     * @param componentID
+     * @param sectionID
      * @return
      */
-    public KnightEDU.Class getClass(CourseID courseID, Term term, int year);
+    public boolean containsClass(int classID);
     /**
      *
-     * @param courseID
-     * @param term
-     * @param year
+     * @param componentID
+     * @param sectionID
      * @return
      */
-    public boolean containsClass(CourseID courseID, Term term, int year);
+    public KnightEDU.Class getClass(int classID);
     /**
      *
-     * @param classObj
+     * @return
      */
-    public void updateClass(KnightEDU.Class classObj);
+    public Query.Component.Offering queryClass();
+    /**
+     *
+     * @param whereClause
+     * @param groupByClause
+     * @param havingClause
+     * @return
+     */
+//    public Set<Component.Offering> queryComponentOffering(String whereClause, String groupByClause, String havingClause);
 //    /**
 //     *
-//     * @param whereClause
-//     * @param groupByClause
-//     * @param havingClause
-//     * @return
+//     * @param componentID
+//     * @param sectionID
 //     */
-//    public Set<KnightEDU.Class> queryClass(String whereClause, String groupByClause, String havingClause);
+    public void removeClass(int classID);
     /**
      *
-     * @return
+     * @param componentOffering
      */
-    public Query.Class queryClass();
+    public void updateClass(KnightEDU.Class componentOffering);
+
+
+
+
+    public static interface Offering {
+        /**
+         *
+         * @param courseID
+         * @param term
+         * @param year
+         * @param primaryComponentID
+         * @return
+         */
+        public KnightEDU.Class addCourseOffering(CourseID courseID, Term term, int year, int primaryComponentID);
+        /**
+         *
+         * @param courseID
+         * @param term
+         * @param year
+         */
+        public void removeCourseOffering(CourseID courseID, Term term, int year);
+        /**
+         *
+         * @param courseID
+         * @param term
+         * @param year
+         * @return
+         */
+        public KnightEDU.Course getCourseOffering(CourseID courseID, Term term, int year);
+        /**
+         *
+         * @param courseID
+         * @param term
+         * @param year
+         * @return
+         */
+        public boolean containsCourseOffering(CourseID courseID, Term term, int year);
+        /**
+         *
+         * @param classObj
+         */
+        public void updateCourseOffering(KnightEDU.Course course);
+    //    /**
+    //     *
+    //     * @param whereClause
+    //     * @param groupByClause
+    //     * @param havingClause
+    //     * @return
+    //     */
+    //    public Set<KnightEDU.Class> queryClass(String whereClause, String groupByClause, String havingClause);
+        /**
+         *
+         * @return
+         */
+        public Query.Course queryCourseOffering();
+    }
 }
