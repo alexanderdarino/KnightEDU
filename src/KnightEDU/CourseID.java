@@ -55,6 +55,9 @@ public abstract class CourseID implements Comparable<CourseID>{
         return encoding.compareTo(o.toString());
     }
 
+    /**
+     *
+     */
     public static class PNS extends CourseID{
         /**
 

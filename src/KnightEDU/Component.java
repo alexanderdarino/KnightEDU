@@ -61,6 +61,10 @@ public class Component
         return null;
     }
 
+    /**
+     *
+     * @return
+     */
     public Offering[] getOfferings()
     {
         return (Offering[]) components.toArray();
@@ -87,10 +91,8 @@ public class Component
 
     /**
 
-     @param componentID
-     @param courseOffering
-     @param label
-     @param type
+     * @param componentGroupID
+     * @param type
      */
     public Component(int componentGroupID, Type type)
     {
@@ -106,6 +108,9 @@ public class Component
         return type;
     }
 
+    /**
+     *
+     */
     public static class Offering
     {
         /**
@@ -130,8 +135,15 @@ public class Component
          */
         protected final int sectionNumber;
 
+        /**
+         *
+         */
         protected int capacity;
 
+        /**
+         *
+         * @return
+         */
         public int getCapacity()
         {
             return capacity;
@@ -161,8 +173,8 @@ public class Component
 
          @param componentID
          @param sectionID
-         @param sectionNumber
-         @param classID
+         * @param sectionNumber
+         * @param capacity
          */
         public Offering(int componentID, int sectionID, int sectionNumber, int capacity)
         {
@@ -173,6 +185,9 @@ public class Component
         }
     }
 
+    /**
+     *
+     */
     public static enum Type
     {
 

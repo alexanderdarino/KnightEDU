@@ -5,8 +5,7 @@
 
 package KnightEDU.DBMS.SQL;
 
-import KnightEDU.DBMS.Query;
-import KnightEDU.DBMS.Query.Component;
+import KnightEDU.DBMS.SQL.Query.Component;
 import KnightEDU.DBMS.Section;
 import KnightEDU.Course;
 import KnightEDU.CourseID;
@@ -30,6 +29,9 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
 
 
 
+    /**
+     *
+     */
     protected final int PREFIX_LENGTH;
     /**
      * Number length requirement
@@ -40,12 +42,24 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
      */
     protected final int SUFFIX_LENGTH;
 
+    /**
+     *
+     */
     protected String driver = "org.apache.derby.jdbc.EmbeddedDriver";
 
+    /**
+     *
+     */
     protected String dbName="C:\\universityDB";
 
+    /**
+     *
+     */
     protected String connectionURL = "jdbc:derby:" + dbName + ";create=true";
 
+    /**
+     *
+     */
     protected Connection conn = null;
 
     /**
@@ -88,51 +102,114 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
         return true;
     }
 
+    /**
+     *
+     * @param prefix
+     * @param number
+     * @param suffix
+     * @return
+     */
     public boolean isValidCourseID(String prefix, String number, String suffix)
     {
         return isValidCoursePrefix(prefix) && isValidCourseNumber(number) && isValidCourseSuffix(suffix);
     }
 
+    /**
+     *
+     * @param prefix
+     * @param number
+     * @param suffix
+     * @param name
+     * @param description
+     * @param credits
+     * @param gradeType
+     * @return
+     */
     public KnightEDU.Course addCourseID(String prefix, String number, String suffix, String name, String description, Credits credits, Type gradeType)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param courseID
+     * @param name
+     * @param description
+     * @param credits
+     * @param gradeType
+     * @return
+     */
     public Course addCourse(String courseID, String name, String description, Credits credits, Type gradeType)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param courseID
+     * @return
+     */
     public boolean containsCourse(String courseID)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param courseID
+     * @return
+     */
     public Course getCourse(String courseID)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param course
+     */
     public void updateCourse(Course course)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param days
+     * @param location
+     * @param timeStart
+     * @param timeEnd
+     * @return
+     */
     public Section addSection(Days days, Location location, int timeStart, int timeEnd)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param sectionID
+     * @return
+     */
     public Section getSection(String sectionID)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param sectionID
+     * @return
+     */
     public boolean containsSection(String sectionID)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param section
+     */
     public void updateSection(Section section)
     {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -160,6 +237,13 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
         return null;
     }
 
+    /**
+     *
+     * @param whereClause
+     * @param groupByClause
+     * @param havingClause
+     * @return
+     */
     public Set<KnightEDU.Course> queryCourse(String whereClause, String groupByClause, String havingClause)
     {
         query("Course", whereClause, groupByClause, havingClause);
@@ -170,136 +254,282 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
         return null;
     }
 
+    /**
+     *
+     * @return
+     */
     public Query.Course queryCourse()
     {
         return new Query.Course(this);
     }
 
+    /**
+     *
+     * @param courseID
+     * @param term
+     * @param year
+     * @param primaryComponentID
+     * @return
+     */
     public Class addClass(CourseID courseID, Term term, int year, int primaryComponentID)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param courseID
+     * @param term
+     * @param year
+     * @return
+     */
     public Class getClass(CourseID courseID, Term term, int year)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param courseID
+     * @param term
+     * @param year
+     * @return
+     */
     public boolean containsClass(CourseID courseID, Term term, int year)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param classObj
+     */
     public void updateClass(Class classObj)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param whereClause
+     * @param groupByClause
+     * @param havingClause
+     * @return
+     */
     public Set<Class> queryClass(String whereClause, String groupByClause, String havingClause)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @return
+     */
     public Query.Class queryClass()
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param courseID
+     */
     public void removeCourse(String courseID)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param sectionID
+     */
     public void removeSection(String sectionID)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param courseID
+     * @param term
+     * @param year
+     */
     public void removeClass(CourseID courseID, Term term, int year)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param componentID
+     * @param sectionID
+     * @param sectionNumber
+     * @param capacity
+     * @return
+     */
     public Offering addComponentOffering(int componentID, int sectionID, int sectionNumber, int capacity)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param componentID
+     * @param sectionID
+     * @return
+     */
     public boolean containsComponentOffering(int componentID, int sectionID)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param componentID
+     * @param sectionID
+     * @return
+     */
     public Offering getComponentOffering(int componentID, int sectionID)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @return
+     */
     public Component.Offering queryComponentOffering()
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param whereClause
+     * @param groupByClause
+     * @param havingClause
+     * @return
+     */
     public Set<Offering> queryComponentOffering(String whereClause, String groupByClause, String havingClause)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param componentID
+     * @param sectionID
+     */
     public void removeComponentOffering(int componentID, int sectionID)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @return
+     */
     public Query.Section querySection()
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param whereClause
+     * @param groupByClause
+     * @param havingClause
+     * @return
+     */
     public Set<KnightEDU.Section> querySection(String whereClause, String groupByClause, String havingClause)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param type
+     * @return
+     */
     public KnightEDU.Component addComponent(KnightEDU.Component.Type type)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param componentID
+     * @return
+     */
     public boolean containsComponent(int componentID)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param componentID
+     * @return
+     */
     public KnightEDU.Component getComponent(int componentID)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @return
+     */
     public Component queryComponent()
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param whereClause
+     * @param groupByClause
+     * @param havingClause
+     * @return
+     */
     public Set<KnightEDU.Component> queryComponent(String whereClause, String groupByClause, String havingClause)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param componentID
+     */
     public void removeComponent(int componentID)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param componentOffering
+     */
     public void updateComponentOffering(Offering componentOffering)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param component
+     */
     public void updateComponent(KnightEDU.Component component)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param CourseIDPrefixLength
+     * @param CourseIDNumberLength
+     * @param CourseIDSuffixLength
+     */
     public DB(int CourseIDPrefixLength, int CourseIDNumberLength, int CourseIDSuffixLength)
     {
         PREFIX_LENGTH = CourseIDPrefixLength;
@@ -321,6 +551,10 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.Section, Knight
         }
     }
 
+    /**
+     *
+     * @throws SQLException
+     */
     protected void closeDB() throws SQLException
     {
 

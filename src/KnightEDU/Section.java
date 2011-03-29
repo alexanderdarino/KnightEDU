@@ -55,7 +55,6 @@ public class Section
     /**
 
      @param sectionID
-     @param capacity
      @param days
      @param timeStart
      @param timeEnd
@@ -71,7 +70,6 @@ public class Section
     /**
 
      @param sectionID
-     @param capacity
      @param days
      @param timeStart
      @param timeEnd
