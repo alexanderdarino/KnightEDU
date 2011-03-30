@@ -310,6 +310,9 @@ public class Course
 //        }
 //    }
 
+    /**
+
+     */
     public static class Offering
     {
         /**

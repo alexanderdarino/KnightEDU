@@ -16,7 +16,7 @@ import KnightEDU.Term;
 public interface Class {
     /**
      *
-     * @param componentID
+     @param classID
      * @param sectionID
      * @param sectionNumber
      * @param capacity
@@ -25,29 +25,24 @@ public interface Class {
     public KnightEDU.Class addClass(int classID, int sectionID, int sectionNumber, int capacity);
     /**
      *
-     * @param componentID
-     * @param sectionID
+     @param classID
      * @return
      */
     public boolean containsClass(int classID);
     /**
      *
-     * @param componentID
-     * @param sectionID
-     * @return
+     @param classID
+     @return
      */
     public KnightEDU.Class getClass(int classID);
     /**
      *
      * @return
      */
-    public Query.Component.Offering queryClass();
+    public KnightEDU.DBMS.Query.Class queryClass();
     /**
      *
-     * @param whereClause
-     * @param groupByClause
-     * @param havingClause
-     * @return
+     @param classID
      */
 //    public Set<Component.Offering> queryComponentOffering(String whereClause, String groupByClause, String havingClause);
 //    /**
@@ -60,61 +55,6 @@ public interface Class {
      *
      * @param componentOffering
      */
-    public void updateClass(KnightEDU.Class componentOffering);
+    public void updateClass(KnightEDU.Class classObj);
 
-
-
-
-    public static interface Offering {
-        /**
-         *
-         * @param courseID
-         * @param term
-         * @param year
-         * @param primaryComponentID
-         * @return
-         */
-        public KnightEDU.Class addCourseOffering(CourseID courseID, Term term, int year, int primaryComponentID);
-        /**
-         *
-         * @param courseID
-         * @param term
-         * @param year
-         */
-        public void removeCourseOffering(CourseID courseID, Term term, int year);
-        /**
-         *
-         * @param courseID
-         * @param term
-         * @param year
-         * @return
-         */
-        public KnightEDU.Course getCourseOffering(CourseID courseID, Term term, int year);
-        /**
-         *
-         * @param courseID
-         * @param term
-         * @param year
-         * @return
-         */
-        public boolean containsCourseOffering(CourseID courseID, Term term, int year);
-        /**
-         *
-         * @param classObj
-         */
-        public void updateCourseOffering(KnightEDU.Course course);
-    //    /**
-    //     *
-    //     * @param whereClause
-    //     * @param groupByClause
-    //     * @param havingClause
-    //     * @return
-    //     */
-    //    public Set<KnightEDU.Class> queryClass(String whereClause, String groupByClause, String havingClause);
-        /**
-         *
-         * @return
-         */
-        public Query.Course queryCourseOffering();
-    }
 }

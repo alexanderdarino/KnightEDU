@@ -25,7 +25,7 @@ public class Component
 
     /**
 
-     @param componentID
+     @param classID
      @return
      */
     public boolean removeClass(int classID)
@@ -37,7 +37,7 @@ public class Component
 
     /**
 
-     @param componentID
+     @param classID
      @return
      */
     public boolean containsClass(int classID)
@@ -48,7 +48,7 @@ public class Component
 
     /**
 
-     @param componentID
+     @param classID
      @return
      */
     public Class getClass(int classID)
@@ -91,8 +91,8 @@ public class Component
 
     /**
 
-     * @param componentGroupID
-     * @param type
+     @param componentID
+     @param type
      */
     public Component(int componentID, Type type)
     {

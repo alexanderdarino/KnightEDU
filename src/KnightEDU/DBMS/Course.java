@@ -1,8 +1,10 @@
 package KnightEDU.DBMS;
 
+import KnightEDU.CourseID;
 import KnightEDU.DBMS.SQL.Query;
 import KnightEDU.Credits;
 import KnightEDU.Grade;
+import KnightEDU.Term;
 import java.util.Set;
 
 /**
@@ -22,7 +24,7 @@ public interface Course {
      *
      * @return
      */
-    public Query.Course queryCourse();
+    public KnightEDU.DBMS.Query.Course queryCourse();
     /**
      *
      * @param courseID
@@ -57,48 +59,62 @@ public interface Course {
     public void removeCourse(String courseID);
     //public boolean isValidCourseID(String courseID);
 
+    
+
     /**
-     *
+
      */
-    public interface PNS extends Course
+    public static interface Offering
     {
         /**
          *
-         * @param prefix
-         * @param number
-         * @param suffix
-         * @param name
-         * @param description
-         * @param credits
-         * @param gradeType
+         * @param courseID
+         * @param term
+         * @param year
+         * @param primaryComponentID
          * @return
          */
-        public KnightEDU.Course addCourseID(String prefix, String number, String suffix, String name, String description, Credits credits, Grade.Type gradeType);
+        public KnightEDU.Course.Offering addCourseOffering(CourseID courseID, Term term, int year, int primaryComponentID);
         /**
          *
-         * @param prefix
-         * @param number
-         * @param suffix
-         * @return
+         * @param courseID
+         * @param term
+         * @param year
          */
-        public boolean isValidCourseID(String prefix, String number, String suffix);
+        public void removeCourseOffering(CourseID courseID, Term term, int year);
         /**
          *
-         * @param s
+         * @param courseID
+         * @param term
+         * @param year
          * @return
          */
-        public boolean isValidCoursePrefix(String s);
+        public KnightEDU.Course.Offering getCourseOffering(CourseID courseID, Term term, int year);
         /**
          *
-         * @param s
+         * @param courseID
+         * @param term
+         * @param year
          * @return
          */
-        public boolean isValidCourseNumber(String s);
+        public boolean containsCourseOffering(CourseID courseID, Term term, int year);
         /**
          *
-         * @param s
+         @param course
+         */
+        public void updateCourseOffering(KnightEDU.Course.Offering courseOffering);
+    //    /**
+    //     *
+    //     * @param whereClause
+    //     * @param groupByClause
+    //     * @param havingClause
+    //     * @return
+    //     */
+    //    public Set<KnightEDU.Class> queryClass(String whereClause, String groupByClause, String havingClause);
+        /**
+         *
          * @return
          */
-        public boolean isValidCourseSuffix(String s);
+        public KnightEDU.DBMS.Query.Course.Offering queryCourseOffering();
     }
 }

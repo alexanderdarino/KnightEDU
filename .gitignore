@@ -3,4 +3,7 @@ manifest.mf
 nbproject
 test
 build
+emacs-X11.exe.stackdump
+derby.log
+dist
 

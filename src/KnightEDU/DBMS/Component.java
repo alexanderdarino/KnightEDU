@@ -34,13 +34,10 @@ public interface Component {
      *
      * @return
      */
-    public Query.Component queryComponent();
+    public KnightEDU.DBMS.Query.Component queryComponent();
     /**
      *
-     * @param whereClause
-     * @param groupByClause
-     * @param havingClause
-     * @return
+     @param componentID
      */
 //    public Set<KnightEDU.Component> queryComponent(String whereClause, String groupByClause, String havingClause);
 //    /**

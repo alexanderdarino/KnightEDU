@@ -19,7 +19,7 @@ public interface Section {
      * @param timeEnd
      * @return
      */
-    public Section addSection(Days days, Location location, int timeStart, int timeEnd);
+    public KnightEDU.Section addSection(Days days, Location location, int timeStart, int timeEnd);
     /**
      *
      * @param sectionID
@@ -30,12 +30,12 @@ public interface Section {
      * @param sectionID
      * @return
      */
-    public Section getSection(String sectionID);
+    public KnightEDU.Section getSection(String sectionID);
     /**
      *
      * @return
      */
-    public Query.Section querySection();
+    public KnightEDU.DBMS.Query.Section querySection();
 //    /**
 //     *
 //     * @param whereClause
@@ -54,5 +54,5 @@ public interface Section {
      *
      * @param section
      */
-    public void updateSection(Section section);
+    public void updateSection(KnightEDU.Section section);
 }

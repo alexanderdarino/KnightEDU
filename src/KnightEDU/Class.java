@@ -1,5 +1,9 @@
 package KnightEDU;
 
+/**
+
+ @author Alexander Darino
+ */
 public class Class
 {
     /**
@@ -7,7 +11,12 @@ public class Class
      */
     protected final int ID;
 
-    public int getID() {
+    /**
+     
+     @return
+     */
+    public int getID()
+    {
         return ID;
     }
 
@@ -56,7 +65,7 @@ public class Class
 
     /**
 
-     @param componentID
+     @param ID
      @param sectionID
      * @param sectionNumber
      * @param capacity

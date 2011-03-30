@@ -13,7 +13,7 @@ public class Query {
     /**
      *
      */
-    protected static class CourseID
+    protected static class CourseID implements KnightEDU.DBMS.Query.CourseID
     {
         private final DB DBMS;
 
@@ -34,7 +34,7 @@ public class Query {
         /**
          *
          */
-        public static class PNS extends CourseID
+        public static class PNS extends CourseID implements KnightEDU.DBMS.Query.CourseID
         {
             /**
              *
@@ -68,10 +68,10 @@ public class Query {
             /**
              *
              * @param prefix
-             * @return
-             * @throws KnightEDU.DBMS.Query.CourseID.PNS.InvalidPrefixException
+             @return
+             @throws KnightEDU.DBMS.SQL.Query.CourseID.PNS.InvalidPrefixException 
              */
-            public PNS containsPrefix(String prefix) throws InvalidPrefixException
+            public KnightEDU.DBMS.SQL.Query.CourseID.PNS containsPrefix(String prefix) throws InvalidPrefixException
             {
                 if (!DBMS.isValidCoursePrefix(prefix)) throw new InvalidPrefixException();
 
@@ -82,9 +82,9 @@ public class Query {
              *
              * @param suffix
              * @return
-             * @throws KnightEDU.DBMS.Query.CourseID.PNS.InvalidSuffixException
+             @throws KnightEDU.DBMS.SQL.Query.CourseID.PNS.InvalidSuffixException
              */
-            public PNS containsSuffix(String suffix) throws InvalidSuffixException
+            public KnightEDU.DBMS.SQL.Query.CourseID.PNS containsSuffix(String suffix) throws InvalidSuffixException
             {
                 if (!DBMS.isValidCourseSuffix(suffix)) throw new InvalidSuffixException();
 
@@ -96,9 +96,9 @@ public class Query {
              *
              * @param number
              * @return
-             * @throws KnightEDU.DBMS.Query.CourseID.PNS.InvalidNumberException
+             @throws KnightEDU.DBMS.SQL.Query.CourseID.PNS.InvalidNumberException
              */
-            public PNS containsNumberEqualTo(String number) throws InvalidNumberException
+            public KnightEDU.DBMS.SQL.Query.CourseID.PNS containsNumberEqualTo(String number) throws InvalidNumberException
             {
                 return numberCompare(number, "=");
             }
@@ -106,10 +106,10 @@ public class Query {
             /**
              *
              * @param number
-             * @return
-             * @throws KnightEDU.DBMS.Query.CourseID.PNS.InvalidNumberException
+             @return
+             @throws KnightEDU.DBMS.SQL.Query.CourseID.PNS.InvalidNumberException
              */
-            public PNS containsNumberLessThan(String number) throws InvalidNumberException
+            public KnightEDU.DBMS.SQL.Query.CourseID.PNS containsNumberLessThan(String number) throws InvalidNumberException
             {
                 return numberCompare(number, "<");
             }
@@ -117,10 +117,10 @@ public class Query {
             /**
              *
              * @param number
-             * @return
-             * @throws KnightEDU.DBMS.Query.CourseID.PNS.InvalidNumberException
+             @return
+             @throws KnightEDU.DBMS.SQL.Query.CourseID.PNS.InvalidNumberException
              */
-            public PNS containsNumberGreaterThan(String number) throws InvalidNumberException
+            public KnightEDU.DBMS.SQL.Query.CourseID.PNS containsNumberGreaterThan(String number) throws InvalidNumberException
             {
                 return numberCompare(number, ">");
             }
@@ -130,9 +130,9 @@ public class Query {
              * @param number
              * @param operation
              * @return
-             * @throws KnightEDU.DBMS.Query.CourseID.PNS.InvalidNumberException
+             @throws KnightEDU.DBMS.SQL.Query.CourseID.PNS.InvalidNumberException
              */
-            protected PNS numberCompare(String number, String operation) throws InvalidNumberException
+            protected KnightEDU.DBMS.SQL.Query.CourseID.PNS numberCompare(String number, String operation) throws InvalidNumberException
             {
                 if (!DBMS.isValidCourseNumber(number)) throw new InvalidNumberException();
                 numberQuery = "number " + operation + " "+ number;
@@ -175,8 +175,16 @@ public class Query {
     /**
      *
      */
-    public static class Course
+    public static class Course implements KnightEDU.DBMS.Query.Course
     {
+
+        public static class Offering
+        {
+
+            public Offering()
+            {
+            }
+        }
         /**
          *
          */
@@ -205,7 +213,7 @@ public class Query {
          *
          * @return
          */
-        public Query.CourseID.PNS specifyCourseID()
+        public KnightEDU.DBMS.Query.CourseID specifyCourseID()
         {
             return (PNS) new Query.CourseID(DBMS);
         }
@@ -245,7 +253,7 @@ public class Query {
          *
          * @return
          */
-        public Set<KnightEDU.Course> build()
+        public Set<KnightEDU.Course> execute()
         {
             boolean hasPrevious = false;
             String whereClause = courseIDQuery;
@@ -258,12 +266,13 @@ public class Query {
                 whereClause +=  descriptionQuery;
             return DBMS.queryCourse(whereClause, "", "");
         }
+
     }
 
     /**
      *
      */
-    public static class Section
+    public static class Section implements KnightEDU.DBMS.Query.Section
     {
         
     }
