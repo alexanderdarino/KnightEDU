@@ -16,7 +16,7 @@ public abstract class Location implements Comparable<Location>{
     /**
      *
      */
-    public class BR extends Location
+    public static class BR extends Location
     {
         /**
          *
@@ -35,7 +35,8 @@ public abstract class Location implements Comparable<Location>{
         @Override
         public String toString()
         {
-            throw new UnsupportedOperationException("Not supported yet.");
+            return location;
+            //throw new UnsupportedOperationException("Not supported yet.");
         }
     }
 }

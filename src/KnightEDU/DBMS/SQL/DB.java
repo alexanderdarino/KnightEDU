@@ -44,12 +44,12 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     /**
      *
      */
-    protected String dbName="C:\\universityDB";
+    protected String dbName="C:\\universityDB\\universityDB";
 
     /**
      *
      */
-    protected String connectionURL = "jdbc:derby:" + dbName + ";create=true";
+    protected String connectionURL = "jdbc:derby:" + dbName + ";";
 
     /**
      *
@@ -87,10 +87,14 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
      *
      * @throws SQLException
      */
-    protected void closeDB() throws SQLException
+    public void closeDB()
     {
 
-         conn.close();
+        try {
+             conn.close();
+        } catch (Throwable e)  {
+        }
+        
          if (driver.equals("org.apache.derby.jdbc.EmbeddedDriver")) {
                boolean gotSQLExc = false;
                try {
@@ -110,7 +114,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
 
     public Query.Course queryCourse()
     {
-        query("Course", whereClause, groupByClause, havingClause);
+        //query("Course", whereClause, groupByClause, havingClause);
         //java.util.MAP map = con.getTypeMap();
         //map.put("SchemaName.ADDRESS", Address.class);
         //rs.next();
@@ -121,17 +125,19 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     public Course addCourse(String courseID, String name, String description, Credits credits, Type gradeType)
     {
         try {
-            PreparedStatement psInsert;
-            psInsert = conn.prepareStatement("insert into COURSE values (?) (?) (?) (?) (?) ");
+            PreparedStatement psInsert = null;
+            String sql = "insert into COURSE(ID, NAME, DESCRIPTION, CREDITSMIN, CREDITSMAX, PREREQUISITES) values (?,?,?,?,?,?)";
+            psInsert = conn.prepareStatement(sql);
             psInsert.setString(1,courseID);
             psInsert.setString(2,name);
             psInsert.setString(3,description);
-            psInsert.setString(4,credits.toString());
-            psInsert.setString(5,gradeType.toString());
+            psInsert.setInt(4,credits.getMinCredits());
+            psInsert.setInt(5,credits.getMaxCredits());
+            psInsert.setString(6,"none");
             psInsert.executeUpdate();
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
         //throw new UnsupportedOperationException("Not supported yet.");
@@ -143,8 +149,8 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             Statement s;
             ResultSet myCourses;
             s = conn.createStatement();
-            String queryString = "select * from COURSE C WHERE C.COURSEID = ";
-            queryString = queryString + courseID;
+            String queryString = "select * from COURSE C WHERE C.ID = ";
+            queryString = queryString + "'" + courseID + "'";
             myCourses = s.executeQuery(queryString);
             while (myCourses.next())
             {
@@ -154,7 +160,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             return false;
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
         //throw new UnsupportedOperationException("Not supported yet.");
@@ -166,17 +172,24 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             Statement s;
             ResultSet myCourses;
             s = conn.createStatement();
-            String queryString = "select * from COURSE C WHERE C.COURSEID = ";
-            queryString = queryString + courseID;
+            String queryString = "select * from COURSE C WHERE C.ID = ";
+            queryString = queryString + "'" + courseID + "'";
             myCourses = s.executeQuery(queryString);
             while (myCourses.next())
             {
-               //TODO
+                int minCredit = myCourses.getInt("CREDITSMIN");
+                int maxCredit = myCourses.getInt("CREDITSMAX");
+                String prefix = myCourses.getString("ID").substring(0,3);
+                String number = myCourses.getString("ID").substring(3,7);
+                CourseID courseId = CourseID.PNS.create(prefix,number,"");
+                Course thisCourse = Course.create(courseId,myCourses.getString("NAME"), myCourses.getString("DESCRIPTION"), Credits.createCredits(minCredit, maxCredit), Type.LETTER );
+                return thisCourse;
+                //TODO
             }
-            return null;
+            
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
         //throw new UnsupportedOperationException("Not supported yet.");
@@ -186,19 +199,18 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             PreparedStatement psUpdate;
-            psUpdate = conn.prepareStatement("update COURSE SET PREFIX = (?), NUMBER = (?), SUFFIX = (?), NAME = (?), DESCRIPTION = (?), CREDITS = (?), GRADETYPE = (?) WHERE COURSEID = (?)");
-            psUpdate.setString(1,"");
-            psUpdate.setString(2,"");
-            psUpdate.setString(3,"");
-            psUpdate.setString(4,course.getName());
-            psUpdate.setString(5,course.getDescription());
-            psUpdate.setString(6,course.getCredits().toString());
-            psUpdate.setString(7,course.getGradeType().toString());
-            psUpdate.setString(8,course.getId().toString());
+            psUpdate = conn.prepareStatement("update COURSE SET NAME = ?, DESCRIPTION = ?, CREDITSMIN = ?, CREDITSMAX = ?, PREREQUISITES = 'NONE'  WHERE ID = ?");
+            //psUpdate.setString(1,course.getId().toString());
+            psUpdate.setString(1,course.getName().toString());
+            psUpdate.setString(2,course.getDescription().toString());
+            psUpdate.setInt(3,course.getCredits().getMinCredits());
+            psUpdate.setInt(4,course.getCredits().getMaxCredits());
+            
+            psUpdate.setString(5,course.getId().toString());
             psUpdate.executeUpdate();
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         //throw new UnsupportedOperationException("Not supported yet.");
@@ -208,12 +220,12 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             PreparedStatement psDelete;
-            psDelete = conn.prepareStatement("delete FROM COURSE WHERE COURSEID = (?)");
+            psDelete = conn.prepareStatement("delete FROM COURSE C WHERE C.ID = (?)");
             psDelete.setString(1,courseID);
             psDelete.executeUpdate();
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         //throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -221,16 +233,27 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     public KnightEDU.Section addSection(Days days, Location location, int timeStart, int timeEnd)
     {
         try {
+            /*int section_id = 0;
+            Statement s;
+            s = conn.createStatement();
+            ResultSet rs = s.executeQuery("SELECT sectionsid.NEXTVAL");
+            if ( rs.next() ) {
+            section_id = rs.getInt(1);
+            }
+            
+            section_id++;
+            */
             PreparedStatement psInsert;
-            psInsert = conn.prepareStatement("insert into SECTION values (?) (?) (?) (?) (?) ");
+            psInsert = conn.prepareStatement("insert into SECTIONS (id, days, timeStart, timeFinish, location) values (sectionid.NEXTVAL,?,?,?,?)");
+            //psInsert.setInt(1,section_id);
             psInsert.setString(1,days.toString());
-            psInsert.setString(2,location.toString());
-            psInsert.setInt(3,timeStart);
-            psInsert.setInt(4,timeEnd);
+            psInsert.setInt(2,timeStart);
+            psInsert.setInt(3,timeEnd);
+            psInsert.setString(4,location.toString());
             psInsert.executeUpdate();
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
         //throw new UnsupportedOperationException("Not supported yet.");
@@ -245,7 +268,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             psDelete.executeUpdate();
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         //throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -253,20 +276,50 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     public KnightEDU.Section getSection(String sectionID)
     {
         try {
+            int sectionid = Integer.parseInt(sectionID);
             Statement s;
-            ResultSet myCourses;
+            ResultSet mySection;
             s = conn.createStatement();
-            String queryString = "select * from SECTION S WHERE S.SECTIONID = ";
+            String queryString = "select * from SECTIONS S WHERE S.ID = ";
             queryString = queryString + sectionID;
-            myCourses = s.executeQuery(queryString);
-            while (myCourses.next())
+            mySection = s.executeQuery(queryString);
+            while (mySection.next())
             {
+                String days = mySection.getString("days");
+                days = days.trim();
+                int timeStart = mySection.getInt("timeStart");
+                int timeFinish = mySection.getInt("timeFinish");
+                String location = mySection.getString("location");
+                KnightEDU.Section thisSection = null;
+                if (days.equals("U"))
+                    thisSection = thisSection.create(sectionid, Days.U, timeStart, timeFinish, location);
+                else if (days.equals("M"))
+                    thisSection = thisSection.create(sectionid, Days.M, timeStart, timeFinish, location);
+                else if (days.equals("T"))
+                    thisSection = thisSection.create(sectionid, Days.T, timeStart, timeFinish, location);
+                else if (days.equals("W"))
+                    thisSection = thisSection.create(sectionid, Days.W, timeStart, timeFinish, location);
+                else if (days.equals("R"))
+                    thisSection = thisSection.create(sectionid, Days.R, timeStart, timeFinish, location);
+                else if (days.equals("F"))
+                    thisSection = thisSection.create(sectionid, Days.F, timeStart, timeFinish, location);
+                else if (days.equals("S"))
+                    thisSection = thisSection.create(sectionid, Days.S, timeStart, timeFinish, location);
+                else if (days.equals("MW"))
+                    thisSection = thisSection.create(sectionid, Days.MW, timeStart, timeFinish, location);
+                else if (days.equals("MWF"))
+                    thisSection = thisSection.create(sectionid, Days.MWF, timeStart, timeFinish, location);
+                else if (days.equals("TR"))
+                    thisSection = thisSection.create(sectionid, Days.TR, timeStart, timeFinish, location);
+                else if (days.equals("TBA"))
+                    thisSection = thisSection.create(sectionid, Days.TBA, timeStart, timeFinish, location);
+                return thisSection;
                //TODO
             }
             return null;
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
         //throw new UnsupportedOperationException("Not supported yet.");
@@ -274,7 +327,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
 
     public Query.Section querySection()
     {
-        query("Section", whereClause, groupByClause, havingClause);
+        //query("Section", whereClause, groupByClause, havingClause);
         //throw new UnsupportedOperationException("Not supported yet.");
         return null;
     }
@@ -282,21 +335,22 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     public boolean containsSection(String sectionID)
     {
         try {
+
             Statement s;
-            ResultSet myCourses;
+            ResultSet mySection;
             s = conn.createStatement();
-            String queryString = "select * from SECTION S WHERE S.SECTIONID = ";
+            String queryString = "select * from SECTIONS S WHERE S.ID = ";
             queryString = queryString + sectionID;
-            myCourses = s.executeQuery(queryString);
-            while (myCourses.next())
+            mySection = s.executeQuery(queryString);
+            while (mySection.next())
             {
-               if (myCourses != null)
+               if (mySection != null)
                return true;
             }
             return false;
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
         //throw new UnsupportedOperationException("Not supported yet.");
@@ -306,19 +360,16 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             PreparedStatement psUpdate;
-            psUpdate = conn.prepareStatement("update SECTION SET PREFIX = (?), NUMBER = (?), SUFFIX = (?), NAME = (?), DESCRIPTION = (?), CREDITS = (?), GRADETYPE = (?) WHERE COURSEID = (?)");
-            psUpdate.setString(1,"");
-            psUpdate.setString(2,"");
-            psUpdate.setString(3,"");
-            //psUpdate.setString(4,course.getName());
-            //psUpdate.setString(5,course.getDescription());
-            //psUpdate.setString(6,course.getCredits().toString());
-            //psUpdate.setString(7,course.getGradeType().toString());
-            //psUpdate.setString(8,course.getId().toString());
+            psUpdate = conn.prepareStatement("update SECTIONS S SET days = ?, timeStart = ?, timeFinish = ?, location = ? WHERE S.ID = ?");
+            psUpdate.setString(1, section.getDays().toString());
+            psUpdate.setInt(2, section.getTimeStart());
+            psUpdate.setInt(3, section.getTimeEnd());
+            psUpdate.setString(4,section.getLocation().toString());
+            psUpdate.setInt(5,section.getSectionID());
             psUpdate.executeUpdate();
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         //throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -327,15 +378,15 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             PreparedStatement psInsert;
-            psInsert = conn.prepareStatement("insert into CLASS values (?) (?) (?) (?) (?) ");
+            psInsert = conn.prepareStatement("insert into CourseOffered (courseID, term, yearOffered) values (?,?,?)");
             psInsert.setString(1,courseID.toString());
             psInsert.setString(2,term.toString());
             psInsert.setInt(3,year);
-            psInsert.setInt(4,primaryComponentID);
+            //psInsert.setInt(4,primaryComponentID);
             psInsert.executeUpdate();
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
         //throw new UnsupportedOperationException("Not supported yet.");
@@ -345,39 +396,46 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             PreparedStatement psDelete;
-            psDelete = conn.prepareStatement("delete FROM CLASS WHERE COURSEID = (?) AND TERM = (?) AND YEAR = (?) ");
+            psDelete = conn.prepareStatement("delete FROM CourseOffered WHERE COURSEID = ? AND TERM = ? AND yearOffered = ?");
             psDelete.setString(1,courseID.toString());
             psDelete.setString(2,term.toString());
             psDelete.setInt(3,year);
             psDelete.executeUpdate();
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
-        throw new UnsupportedOperationException("Not supported yet.");
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public Course.Offering getCourseOffering(CourseID courseID, Term term, int year)
     {
         try {
             Statement s;
-            ResultSet myClasses;
+            ResultSet myCourseOffering;
             s = conn.createStatement();
-            String queryString = "select * from CLASS C WHERE C.COURSEID = ";
-            queryString = queryString + courseID;
-            queryString = queryString + " AND C.TERM = ";
-            queryString = queryString + term.toString();
-            queryString = queryString + " AND C.YEAR = ";
-            queryString = queryString + year;
-            myClasses = s.executeQuery(queryString);
-            while (myClasses.next())
+            String queryString = "select * from CourseOffered C WHERE C.COURSEID = '";
+            queryString = queryString + courseID.toString() + "'";
+            queryString = queryString + " AND C.TERM = '";
+            queryString = queryString + term.toString() + "'";
+            queryString = queryString + " AND C.yearOffered = ";
+            String newyear = Integer.toString(year);
+            queryString = queryString + newyear.toString();
+            myCourseOffering = s.executeQuery(queryString);
+            while (myCourseOffering.next())
             {
+                String prefix = myCourseOffering.getString("COURSEID").substring(0,3);
+                String number = myCourseOffering.getString("COURSEID").substring(3,7);
+                CourseID courseId = CourseID.PNS.create(prefix,number,"");
+                String thisterm = myCourseOffering.getString("TERM");
+                int thisyear = myCourseOffering.getInt("yearOffered");
+                //KnightEDU.Course.Offering newOffering = KnightEDU.Course.Offering(courseId, thisterm, thisyear, 1);
                //TODO
             }
             return null;
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
         //throw new UnsupportedOperationException("Not supported yet.");
@@ -385,12 +443,44 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
 
     public boolean containsCourseOffering(CourseID courseID, Term term, int year)
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            Statement s;
+            ResultSet myCourseOffering;
+            s = conn.createStatement();
+            String queryString = "select * from CourseOffered C WHERE C.COURSEID = '";
+            queryString = queryString + courseID.toString() + "'";
+            queryString = queryString + " AND C.TERM = '";
+            queryString = queryString + term.toString() + "'";
+            queryString = queryString + " AND C.yearOffered = ";
+            String newyear = Integer.toString(year);
+            queryString = queryString + newyear.toString();
+            myCourseOffering = s.executeQuery(queryString);
+            while (myCourseOffering.next())
+            {
+                if (myCourseOffering != null)
+               return true;
+            }
+            return false;
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     public void updateCourseOffering(KnightEDU.Course.Offering course)
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+         try {
+            PreparedStatement psUpdate;
+            psUpdate = conn.prepareStatement("update CourseOffered C SET TERM = ?, yearOffered = ? WHERE C.COURSEID = ?");
+            psUpdate.setString(1, course.getTerm().toString());
+            psUpdate.setInt(2, course.getYear());
+            psUpdate.setString(3, course.getCourseID().toString());
+            psUpdate.executeUpdate();
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public KnightEDU.DBMS.Query.Course.Offering queryCourseOffering()
@@ -402,15 +492,15 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             PreparedStatement psInsert;
-            psInsert = conn.prepareStatement("insert into COMPONENTOFFERING values (?) (?) (?) (?) (?) ");
-            psInsert.setInt(1,componentID);
+            psInsert = conn.prepareStatement("insert into CLASSES(id, sectionID, sectionNum) values (?,?,?) ");
+            psInsert.setInt(1,classID);
             psInsert.setInt(2,sectionID);
             psInsert.setInt(3,sectionNumber);
-            psInsert.setInt(4,capacity);
+            //psInsert.setInt(4,capacity);
             psInsert.executeUpdate();
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
         //throw new UnsupportedOperationException("Not supported yet.");
@@ -420,22 +510,23 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             Statement s;
-            ResultSet myComponentOffering;
+            ResultSet myclass;
             s = conn.createStatement();
-            String queryString = "select * from COMPONENTOFFERING C WHERE C.COMPONENTID = ";
-            queryString = queryString + componentID;
-            queryString = queryString + " AND C.SECTIONID = ";
-            queryString = queryString + sectionID;
-            myComponentOffering = s.executeQuery(queryString);
-            while (myComponentOffering.next())
+            String queryString = "select * from CLASSES C WHERE C.ID = ";
+            String classid = Integer.toString(classID);
+            queryString = queryString + classid;
+            //queryString = queryString + " AND C.SECTIONID = ";
+            //queryString = queryString + sectionID;
+            myclass = s.executeQuery(queryString);
+            while (myclass.next())
             {
-               if (myComponentOffering != null)
+               if (myclass != null)
                return true;
             }
             return false;
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
         //throw new UnsupportedOperationException("Not supported yet.");
@@ -445,21 +536,27 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             Statement s;
-            ResultSet myComponentOffering;
+            ResultSet myClass;
             s = conn.createStatement();
-            String queryString = "select * from COMPONENTOFFERING C WHERE C.COMPONENTID = ";
-            queryString = queryString + componentID;
-            queryString = queryString + " AND C.SECTIONID = ";
-            queryString = queryString + sectionID;
-            myComponentOffering = s.executeQuery(queryString);
-            while (myComponentOffering.next())
+            String queryString = "select * from CLASSES C WHERE C.ID = ";
+            String classid = Integer.toString(classID);
+            queryString = queryString + classid;
+            //queryString = queryString + " AND C.SECTIONID = ";
+            //queryString = queryString + sectionID;
+            myClass = s.executeQuery(queryString);
+            while (myClass.next())
             {
-               //TODO
+                int secID = myClass.getInt("sectionID");
+                int secNumber = myClass.getInt("sectionNum");
+                KnightEDU.Class myclass = new KnightEDU.Class(classID, secID, secNumber, 100);
+
+                return myclass;
+                //TODO
             }
             return null;
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
         //throw new UnsupportedOperationException("Not supported yet.");
@@ -467,7 +564,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
 
     public KnightEDU.DBMS.Query.Class queryClass()
     {
-        query("ComponentOffering", whereClause, groupByClause, havingClause);
+        //query("ComponentOffering", whereClause, groupByClause, havingClause);
         //throw new UnsupportedOperationException("Not supported yet.");
          return null;
     }
@@ -476,13 +573,13 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             PreparedStatement psDelete;
-            psDelete = conn.prepareStatement("delete FROM COMPONENTOFFERING WHERE COMPONENTID = (?) AND SECTIONID = (?) ");
-            psDelete.setInt(1,componentID);
-            psDelete.setInt(2,sectionID);
+            psDelete = conn.prepareStatement("delete FROM CLASSES C WHERE C.ID = (?) ");
+            psDelete.setInt(1,classID);
+            //psDelete.setInt(2,sectionID);
             psDelete.executeUpdate();
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         //throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -492,19 +589,19 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             PreparedStatement psUpdate;
-            psUpdate = conn.prepareStatement("update COMPONENTOFFERING SET SECTIONID = (?), SECTIONNUMBER = (?), CAPACITY = (?) WHERE COMPONENTID = (?)");
+            psUpdate = conn.prepareStatement("update CLASSES C SET SECTIONID = ?, sectionNum = ? WHERE C.ID = (?)");
             //psUpdate.setInt(1,componentOffering.getComponentID());
             psUpdate.setInt(1,classObj.getSectionID());
             psUpdate.setInt(2,classObj.getSectionNumber());
-            psUpdate.setInt(3,classObj.getCapacity());
+            //psUpdate.setInt(3,classObj.getCapacity());
             //psUpdate.setString(5,course.getDescription());
             //psUpdate.setString(6,course.getCredits().toString());
             //psUpdate.setString(7,course.getGradeType().toString());
-            psUpdate.setInt(8,classObj.getID());
+            psUpdate.setInt(3,classObj.getID());
             psUpdate.executeUpdate();
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         //throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -513,7 +610,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             PreparedStatement psInsert;
-            psInsert = conn.prepareStatement("insert into COMPONENT values (?) (?) (?) (?) (?) ");
+            psInsert = conn.prepareStatement("insert into COMPONENT (id, componentType) values (?,?)");
             psInsert.setString(1,type.toString());
             //psInsert.setString(2,name);
             //psInsert.setString(3,description);
@@ -522,7 +619,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             psInsert.executeUpdate();
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
         //throw new UnsupportedOperationException("Not supported yet.");
@@ -534,8 +631,10 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             Statement s;
             ResultSet myComponent;
             s = conn.createStatement();
-            String queryString = "select * from COMPONENT C WHERE C.COMPONENTID = ";
-            queryString = queryString + componentID;
+            String queryString = "select * from COMPONENT C WHERE C.ID = ";
+            String componentid = Integer.toString(componentID);
+            queryString = queryString + componentid;
+
             myComponent = s.executeQuery(queryString);
             while (myComponent.next())
             {
@@ -545,7 +644,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             return false;
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
         //throw new UnsupportedOperationException("Not supported yet.");
@@ -557,17 +656,28 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             Statement s;
             ResultSet myComponent;
             s = conn.createStatement();
-            String queryString = "select * from COMPONENT C WHERE C.COMPONENTID = ";
-            queryString = queryString + componentID;
+            String queryString = "select * from COMPONENT C WHERE C.ID = ";
+            String componentid = Integer.toString(componentID);
+            queryString = queryString + componentid;
             myComponent = s.executeQuery(queryString);
             while (myComponent.next())
             {
+                KnightEDU.Component mycomponent = null;
+                int componentType = myComponent.getInt("componentType");
+                switch (componentType)
+                {
+                    case 1: mycomponent = new KnightEDU.Component(componentID, KnightEDU.Component.Type.LECTURE); break;
+                    case 2: mycomponent = new KnightEDU.Component(componentID, KnightEDU.Component.Type.LAB); break;
+                    case 3: mycomponent = new KnightEDU.Component(componentID, KnightEDU.Component.Type.INDEPENDENT_STUDY); break;
+                    case 4: mycomponent = new KnightEDU.Component(componentID, KnightEDU.Component.Type.FIELD); break;
+                }
+                return mycomponent;
                //TODO
             }
             return null;
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
         //throw new UnsupportedOperationException("Not supported yet.");
@@ -582,12 +692,12 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             PreparedStatement psDelete;
-            psDelete = conn.prepareStatement("delete FROM COMPONENT WHERE COMPONENTID = (?)");
+            psDelete = conn.prepareStatement("delete FROM COMPONENT C WHERE C.ID = (?)");
             psDelete.setInt(1,componentID);
             psDelete.executeUpdate();
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         //throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -597,13 +707,14 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             PreparedStatement psUpdate;
-            psUpdate = conn.prepareStatement("update COMPONENT SET OFFERING = (?) WHERE COMPONENTID = (?)");
-            psUpdate.setString(1,component.getClasses().toString());
-            psUpdate.setInt(8,component.getID());
+            psUpdate = conn.prepareStatement("update COMPONENT C SET componentType = ? WHERE C.ID = ?");
+            KnightEDU.Component.Type myType = component.getType();
+            psUpdate.setInt(1,myType.ordinal());
+            psUpdate.setInt(2,component.getID());
             psUpdate.executeUpdate();
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -630,20 +741,26 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             Statement s;
-            ResultSet myCourses;
+            ResultSet myResults;
             s = conn.createStatement();
             String queryString = "select * from " + tables;
             if (whereClause != null && !whereClause.equals(""))
                 queryString += " WHERE " + whereClause;
-            myCourses = s.executeQuery(queryString);
-            while (myCourses.next())
-            {
-                System.out.println(myCourses.getString("name"));
-            }
-            return null;
+            myResults = s.executeQuery(queryString);
+            //while (myResults.next())
+            //{
+             //   if(tables.toLowerCase()=="course")
+             //   {
+
+
+
+              //  }
+              //  System.out.println(myResults.getString("name"));
+            //}
+            return myResults;
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB_OLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }

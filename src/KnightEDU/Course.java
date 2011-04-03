@@ -174,7 +174,7 @@ public class Course
     @return a new course object. If name, credits, or gradeType are <code>null</code>
     then returns <code>null</code>.
      */
-    public static Course createCourse(CourseID id, String name, String description, Credits credits, Grade.Type gradeType)
+    public static Course create(CourseID id, String name, String description, Credits credits, Grade.Type gradeType)
     {
         if (id == null || name == null || description == null || credits == null || gradeType == null) {
             return null;
