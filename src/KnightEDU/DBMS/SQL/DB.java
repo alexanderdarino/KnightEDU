@@ -243,13 +243,29 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             
             section_id++;
             */
+
+            Statement s;
+            ResultSet myResults;
+            s = conn.createStatement();
+            String queryString = "select MAX (S.id) from SECTIONS S";
+            myResults = s.executeQuery(queryString);
+            int maxID = 0;
+            if (myResults.wasNull())
+            {
+                maxID = 0;
+            }
+            else while (myResults.next())
+            {
+               maxID = myResults.getInt("1");
+            }
+            int nextID = maxID + 1;
             PreparedStatement psInsert;
-            psInsert = conn.prepareStatement("insert into SECTIONS (id, days, timeStart, timeFinish, location) values (sectionid.NEXTVAL,?,?,?,?)");
-            //psInsert.setInt(1,section_id);
-            psInsert.setString(1,days.toString());
-            psInsert.setInt(2,timeStart);
-            psInsert.setInt(3,timeEnd);
-            psInsert.setString(4,location.toString());
+            psInsert = conn.prepareStatement("insert into SECTIONS (id, days, timeStart, timeFinish, location) values (?,?,?,?,?)");
+            psInsert.setInt(1,nextID);
+            psInsert.setString(2,days.toString());
+            psInsert.setInt(3,timeStart);
+            psInsert.setInt(4,timeEnd);
+            psInsert.setString(5,location.toString());
             psInsert.executeUpdate();
         }
         catch (SQLException ex) {
@@ -263,8 +279,9 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             PreparedStatement psDelete;
-            psDelete = conn.prepareStatement("delete FROM SECTION WHERE SECTIONID = (?)");
-            psDelete.setString(1,sectionID);
+            psDelete = conn.prepareStatement("delete FROM SECTIONS S WHERE S.ID = (?)");
+            int secID = Integer.parseInt(sectionID);
+            psDelete.setInt(1,secID);
             psDelete.executeUpdate();
         }
         catch (SQLException ex) {
@@ -429,10 +446,18 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
                 CourseID courseId = CourseID.PNS.create(prefix,number,"");
                 String thisterm = myCourseOffering.getString("TERM");
                 int thisyear = myCourseOffering.getInt("yearOffered");
-                //KnightEDU.Course.Offering newOffering = KnightEDU.Course.Offering(courseId, thisterm, thisyear, 1);
-               //TODO
+                KnightEDU.Course.Offering newOffering = null;
+                if (thisterm.equals("FALL"))
+                    newOffering = new KnightEDU.Course.Offering(courseId, thisyear, KnightEDU.Term.FALL, 1);
+                else if (thisterm.equals("SPRING"))
+                    newOffering = new KnightEDU.Course.Offering(courseId, thisyear, KnightEDU.Term.SPRING, 1);
+                else if (thisterm.equals("SUMMER"))
+                    newOffering = new KnightEDU.Course.Offering(courseId, thisyear, KnightEDU.Term.SUMMER, 1);
+                else if (thisterm.equals("OCCASIONAL"))
+                    newOffering = new KnightEDU.Course.Offering(courseId, thisyear, KnightEDU.Term.OCCASIONAL, 1);
+                return newOffering;
             }
-            return null;
+            
         }
         catch (SQLException ex) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
@@ -609,9 +634,25 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     public KnightEDU.Component addComponent(KnightEDU.Component.Type type)
     {
         try {
+            Statement s;
+            ResultSet myResults;
+            s = conn.createStatement();
+            String queryString = "select MAX (C.id) from COMPONENT C";
+            myResults = s.executeQuery(queryString);
+            int maxID = 0;
+            if (myResults.wasNull())
+            {
+                maxID = 0;
+            }
+            else while(myResults.next())
+            {
+               maxID = myResults.getInt("1");
+            }
+            int nextID = maxID + 1;
             PreparedStatement psInsert;
             psInsert = conn.prepareStatement("insert into COMPONENT (id, componentType) values (?,?)");
-            psInsert.setString(1,type.toString());
+            psInsert.setInt(1,nextID);
+            psInsert.setInt(2,type.ordinal());
             //psInsert.setString(2,name);
             //psInsert.setString(3,description);
             //psInsert.setString(4,credits.toString());
@@ -666,10 +707,10 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
                 int componentType = myComponent.getInt("componentType");
                 switch (componentType)
                 {
-                    case 1: mycomponent = new KnightEDU.Component(componentID, KnightEDU.Component.Type.LECTURE); break;
-                    case 2: mycomponent = new KnightEDU.Component(componentID, KnightEDU.Component.Type.LAB); break;
-                    case 3: mycomponent = new KnightEDU.Component(componentID, KnightEDU.Component.Type.INDEPENDENT_STUDY); break;
-                    case 4: mycomponent = new KnightEDU.Component(componentID, KnightEDU.Component.Type.FIELD); break;
+                    case 0: mycomponent = new KnightEDU.Component(componentID, KnightEDU.Component.Type.LECTURE); break;
+                    case 1: mycomponent = new KnightEDU.Component(componentID, KnightEDU.Component.Type.LAB); break;
+                    case 2: mycomponent = new KnightEDU.Component(componentID, KnightEDU.Component.Type.INDEPENDENT_STUDY); break;
+                    case 3: mycomponent = new KnightEDU.Component(componentID, KnightEDU.Component.Type.FIELD); break;
                 }
                 return mycomponent;
                //TODO
