@@ -34,6 +34,12 @@ public class Class
      */
     protected int capacity;
 
+    protected int instructorID;
+
+    public int getInstructorID() {
+        return instructorID;
+    }
+
     /**
      *
      * @return
@@ -70,11 +76,12 @@ public class Class
      * @param sectionNumber
      * @param capacity
      */
-    public Class(int ID, int sectionID, int sectionNumber, int capacity)
+    public Class(int ID, int sectionID, int sectionNumber, int capacity, int instructorID)
     {
         this.ID = ID;
         this.sectionID = sectionID;
         this.sectionNumber = sectionNumber;
         this.capacity = capacity;
+        this.instructorID = instructorID;
     }
 }

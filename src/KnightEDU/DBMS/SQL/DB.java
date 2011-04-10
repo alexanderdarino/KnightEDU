@@ -8,7 +8,11 @@ package KnightEDU.DBMS.SQL;
 import KnightEDU.Course;
 import KnightEDU.CourseID;
 import KnightEDU.Credits;
+import KnightEDU.DBMS.Query.Employee;
+import KnightEDU.DBMS.Query.Transcript;
+import KnightEDU.Grade;
 import KnightEDU.Grade.Type;
+import KnightEDU.Instructor;
 import KnightEDU.Term;
 import KnightEDU.Class;
 import KnightEDU.Days;
@@ -21,7 +25,7 @@ import java.util.logging.Logger;
  *
  * @author Alexander Darino
  */
-public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, KnightEDU.DBMS.Section, KnightEDU.DBMS.Course.Offering, KnightEDU.DBMS.Class, KnightEDU.DBMS.Component
+public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, KnightEDU.DBMS.Section, KnightEDU.DBMS.Course.Offering, KnightEDU.DBMS.Class, KnightEDU.DBMS.Component, KnightEDU.DBMS.Employee, KnightEDU.DBMS.Transcript.Entry, KnightEDU.DBMS.Instructor
 {
     /**
      *
@@ -44,7 +48,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     /**
      *
      */
-    protected String dbName="C:\\universityDB\\universityDB";
+    protected String dbName="C:\\universityDB";
 
     /**
      *
@@ -425,14 +429,14 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Course.Offering getCourseOffering(CourseID courseID, Term term, int year)
+    public Course.Offering getCourseOffering(String courseID, Term term, int year)
     {
         try {
             Statement s;
             ResultSet myCourseOffering;
             s = conn.createStatement();
             String queryString = "select * from CourseOffered C WHERE C.COURSEID = '";
-            queryString = queryString + courseID.toString() + "'";
+            queryString = queryString + courseID + "'";
             queryString = queryString + " AND C.TERM = '";
             queryString = queryString + term.toString() + "'";
             queryString = queryString + " AND C.yearOffered = ";
@@ -510,7 +514,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
 
     public KnightEDU.DBMS.Query.Course.Offering queryCourseOffering()
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new Query.Course.Offering(this);
     }
 
     public Class addClass(int classID, int sectionID, int sectionNumber, int capacity)
@@ -726,7 +730,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
 
     public KnightEDU.DBMS.Query.Component queryComponent()
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new Query.Component(this);
     }
 
     public void removeComponent(int componentID)
@@ -808,6 +812,133 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
 
     public boolean isValidCourseID(String courseID)
     {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Employee queryEmployee() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public KnightEDU.Employee addEmployee(int employeeID, String firstName, String lastName) {
+
+        try {
+            Statement s;
+            ResultSet myResults;
+            s = conn.createStatement();
+            String queryString = "select MAX (E.id) from Employees E";
+            myResults = s.executeQuery(queryString);
+            int maxID = 0;
+            if (myResults.wasNull())
+            {
+                maxID = 0;
+            }
+            else while(myResults.next())
+            {
+               maxID = myResults.getInt("1");
+            }
+            int nextID = maxID + 1;
+            PreparedStatement psInsert;
+            psInsert = conn.prepareStatement("insert into Employees (id, fname, lname) values (?,?,?)");
+            psInsert.setInt(1,nextID);
+            psInsert.setString(2,firstName);
+            psInsert.setString(3,lastName);
+            //psInsert.setInt(4,primaryComponentID);
+            psInsert.executeUpdate();
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public boolean containsEmployee(int employeeID) {
+
+        try {
+            Statement s;
+            ResultSet myEmployee;
+            s = conn.createStatement();
+            String queryString = "select * from Employees E WHERE E.ID = ";
+            String componentid = Integer.toString(employeeID);
+            queryString = queryString + componentid;
+
+            myEmployee = s.executeQuery(queryString);
+            while (myEmployee.next())
+            {
+               if (myEmployee != null)
+               return true;
+            }
+            return false;
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public KnightEDU.Employee getEmployee(int employeeID) {
+        try {
+            Statement s;
+            ResultSet myEmployee;
+            s = conn.createStatement();
+            String queryString = "select * from Employees E WHERE E.ID = ";
+            String componentid = Integer.toString(employeeID);
+            queryString = queryString + componentid;
+            myEmployee = s.executeQuery(queryString);
+            while (myEmployee.next())
+            {
+                KnightEDU.Employee  myemp = null;
+                int componentType = myEmployee.getInt("fname");
+                switch (componentType)
+                {
+                    case 0: mycomponent = new KnightEDU.Component(componentID, KnightEDU.Component.Type.LECTURE); break;
+                    case 1: mycomponent = new KnightEDU.Component(componentID, KnightEDU.Component.Type.LAB); break;
+                    case 2: mycomponent = new KnightEDU.Component(componentID, KnightEDU.Component.Type.INDEPENDENT_STUDY); break;
+                    case 3: mycomponent = new KnightEDU.Component(componentID, KnightEDU.Component.Type.FIELD); break;
+                }
+                return mycomponent;
+               //TODO
+            }
+            return null;
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public void updateEmployee(KnightEDU.Employee employee) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void remoteEmployee(int employeeID) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Transcript queryTranscript() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public KnightEDU.Transcript.Entry addTranscriptEntry(int studentID, KnightEDU.DBMS.CourseID courseID, int year, Term term, Grade grade, int credits) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean containsTranscriptEntry(int studentID, KnightEDU.DBMS.CourseID courseID, int year, Term term) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public KnightEDU.Transcript.Entry getTranscriptEntry(int studentID, KnightEDU.DBMS.CourseID courseID, int year, Term term) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void updateTranscriptEntry(KnightEDU.Transcript transcript) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void removeTranscriptEntry(int studentID, KnightEDU.DBMS.CourseID courseID, int year, Term term) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Instructor getInstructor(int instructor) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

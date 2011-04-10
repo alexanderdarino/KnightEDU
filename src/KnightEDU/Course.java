@@ -315,6 +315,7 @@ public class Course
      */
     public static class Offering
     {
+        protected int primaryComponentID;
         /**
 
          @param courseID
@@ -322,22 +323,22 @@ public class Course
          @param year
          @param primaryComponentGroupID
          */
-        public Offering(CourseID courseID, int year, Term term, int primaryComponentGroupID)
+        public Offering(CourseID courseID, int year, Term term, int primaryComponentID)
         {
             this.courseID = courseID;
             this.term = term;
             this.year = year;
-            this.componentIDs.add(primaryComponentGroupID);
+            this.primaryComponentID = primaryComponentID;
         }
 
-        /**
-
-         @return
-         */
-        public int componentsTotal()
-        {
-            return componentIDs.size();
-        }
+//        /**
+//
+//         @return
+//         */
+//        public int componentsTotal()
+//        {
+//            return componentIDs.size();
+//        }
         /**
          * The course this class covers
          */
@@ -352,10 +353,10 @@ public class Course
         protected int year;
 
 
-        /**
-
-         */
-        protected ArrayList<Integer> componentIDs = new ArrayList();
+//        /**
+//
+//         */
+//        protected ArrayList<Integer> componentIDs = new ArrayList();
 
         /**
 
@@ -384,15 +385,19 @@ public class Course
             return courseID;
         }
 
-        /**
+//        /**
+//
+//         @return
+//         */
+//        public ArrayList<Integer> getComponentIDs()
+//        {
+//            return (ArrayList<Integer>) Collections.unmodifiableList(componentIDs);
+//        }
 
-         @return
-         */
-        public ArrayList<Integer> getComponentIDs()
+        public int getPrimaryComponentID()
         {
-            return (ArrayList<Integer>) Collections.unmodifiableList(componentIDs);
+            return primaryComponentID;
         }
-
         /**
 
          */
@@ -401,33 +406,33 @@ public class Course
 
         }
 
-        /**
+//        /**
+//
+//         @param componentGroupID
+//         */
+//        public void addComponent(int componentGroupID)
+//        {
+//            if (!componentIDs.contains(componentGroupID))
+//                componentIDs.add(componentGroupID);
+//        }
 
-         @param componentGroupID
-         */
-        public void addComponent(int componentGroupID)
-        {
-            if (!componentIDs.contains(componentGroupID))
-                componentIDs.add(componentGroupID);
-        }
-
-        /**
-
-         @param componentGroupID
-         */
-        public void removeComponent(int componentGroupID)
-        {
-            componentIDs.remove(componentGroupID);
-        }
-
-        /**
-
-         @param componentGroupID
-         @return
-         */
-        public boolean containsComponent(int componentGroupID)
-        {
-            return componentIDs.contains(componentGroupID);
-        }
+//        /**
+//
+//         @param componentGroupID
+//         */
+//        public void removeComponent(int componentGroupID)
+//        {
+//            componentIDs.remove(componentGroupID);
+//        }
+//
+//        /**
+//
+//         @param componentGroupID
+//         @return
+//         */
+//        public boolean containsComponent(int componentGroupID)
+//        {
+//            return componentIDs.contains(componentGroupID);
+//        }
     }
 }

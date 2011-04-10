@@ -8,20 +8,28 @@ import java.util.Set;
  */
 public interface Query {
 
+    public static class Employee {
+
+        public Employee() {
+        }
+    }
+
 
     public static interface Section
     {
-        
+//        public KnightEDU.Section getSection(int classID);
     }
 
     public static interface Component
     {
+        public Set<Integer> getComponentIDs(int primaryComponentID);
+        public Set<Integer> getClassIDs(int componentID);
         
     }
 
     public static interface Class
     {
-
+        
     }
     /**
      *
@@ -31,7 +39,7 @@ public interface Query {
 
         public static interface Offering
         {
-            public Query.Course.Offering containsCourse(String courseID);
+            public Query.Course.Offering specifyCourseID(String courseID);
             public Query.Course.Offering offeredTerm(Term term);
             public Query.Course.Offering offeredYear(int year);
             public Set<KnightEDU.Course.Offering> invoke();
@@ -56,6 +64,12 @@ public interface Query {
             public static class InvalidPrefixException extends Exception{};
             public static class InvalidSuffixException extends Exception{};
             public static class InvalidNumberException extends Exception{};
+        }
+    }
+
+    public static class Transcript {
+
+        public Transcript() {
         }
     }
 }
