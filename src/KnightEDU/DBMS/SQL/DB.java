@@ -778,7 +778,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    private ResultSet query(String tables, String whereClause, String groupByClause, String havingClause)
+    protected ResultSet query(String tables, String whereClause, String groupByClause, String havingClause)
     {
         try {
             Statement s;

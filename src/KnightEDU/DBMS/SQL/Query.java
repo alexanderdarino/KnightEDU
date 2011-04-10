@@ -2,6 +2,8 @@ package KnightEDU.DBMS.SQL;
 
 import KnightEDU.DBMS.SQL.DB;
 import KnightEDU.DBMS.SQL.Query.CourseID.PNS;
+import KnightEDU.Term;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -178,12 +180,42 @@ public class Query {
     public static class Course implements KnightEDU.DBMS.Query.Course
     {
 
-        public static class Offering
+        public static class Offering implements KnightEDU.DBMS.Query.Course.Offering
         {
 
-            public Offering()
+            protected final Set<String> course = new HashSet();
+            protected final Set<Term> term = new HashSet();
+            protected final Set<Integer> year = new HashSet();
+            protected final DB db;
+            public Offering(DB db)
             {
+                this.db = db;
             }
+
+            public Offering containsCourse(String courseID)
+            {
+                course.add(courseID);
+                return this;
+            }
+
+            public Offering offeredTerm(Term term)
+            {
+                this.term.add(term);
+                return this;
+            }
+
+            public Offering offeredYear(int year)
+            {
+                this.year.add(year);
+                return this;
+            }
+
+            public Set<KnightEDU.Course.Offering> invoke()
+            {
+                
+            }
+
+            
         }
         /**
          *
@@ -253,7 +285,7 @@ public class Query {
          *
          * @return
          */
-        public Set<KnightEDU.Course> execute()
+        public Set<KnightEDU.Course> invoke()
         {
             boolean hasPrevious = false;
             String whereClause = courseIDQuery;
@@ -264,7 +296,8 @@ public class Query {
             if (hasPrevious) whereClause += " AND ";
             if (descriptionQuery != null && !descriptionQuery.equals(""))
                 whereClause +=  descriptionQuery;
-            return DBMS.queryCourse(whereClause, "", "");
+            //return DBMS.queryCourse(whereClause, "", "");
+            return DBMS.query("Course", whereClause, "", "");
         }
 
     }
