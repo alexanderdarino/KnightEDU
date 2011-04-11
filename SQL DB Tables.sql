@@ -81,4 +81,3 @@ CREATE TABLE Transcript (
     credits INT,
     PRIMARY KEY (studentID, courseID, yearOffered, term),
     FOREIGN KEY (studentID) REFERENCES Employees(id));
-

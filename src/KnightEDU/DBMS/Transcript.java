@@ -16,7 +16,7 @@ public interface Transcript {
     public static interface Entry extends Transcript
     {
         public KnightEDU.DBMS.Query.Transcript queryTranscript();
-        public KnightEDU.Transcript.Entry addTranscriptEntry(int studentID, KnightEDU.CourseID courseID, int year, Term term, Grade grade, int credits);
+        public KnightEDU.Transcript.Entry addTranscriptEntry(int studentID, KnightEDU.CourseID courseID, int year, Term term, Grade.Type gradeType, Grade grade, int credits);
         public boolean containsTranscriptEntry(int studentID, KnightEDU.CourseID courseID, int year, Term term);
         public  KnightEDU.Transcript getTranscript(int studentID);
         public KnightEDU.Transcript.Entry getTranscriptEntry(int studentID, KnightEDU.CourseID courseID, int year, Term term);

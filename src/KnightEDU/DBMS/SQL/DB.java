@@ -960,19 +960,20 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public KnightEDU.Transcript.Entry addTranscriptEntry(int studentID, KnightEDU.CourseID courseID, int year, Term term, Grade grade, int credits) {
+    public KnightEDU.Transcript.Entry addTranscriptEntry(int studentID, KnightEDU.CourseID courseID, int year, Term term, Grade.Type gradeType, Grade grade, int credits) {
         
         try {
 
 
             PreparedStatement psInsert;
-            psInsert = conn.prepareStatement("insert into Transcript (studentID, courseID, yearOffered, term, grade, credits) values (?,?,?,?,?,?)");
+            psInsert = conn.prepareStatement("insert into Transcript (studentID, courseID, yearOffered, term, gradeType, grade, credits) values (?,?,?,?,?,?,?)");
             psInsert.setInt(1,studentID);
             psInsert.setString(2,courseID.toString());
             psInsert.setInt(3,year);
             psInsert.setInt(4,term.ordinal());
-            psInsert.setString(5,grade.toString());
-            psInsert.setInt(6,credits);
+            psInsert.setInt(5,gradeType.ordinal());
+            psInsert.setString(6,grade.toString());
+            psInsert.setInt(7,credits);
             psInsert.executeUpdate();
         }
         catch (SQLException ex) {
@@ -1028,9 +1029,9 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             myTranscript = s.executeQuery(queryString);
             myTranscript.next();
             
-                KnightEDU.Transcript  thistranstript = null;
-                int studentid1 = myTranscript.getInt("studentID");
-                thistranstript = new KnightEDU.Transcript(studentid1);
+                //KnightEDU.Transcript  thistranstript = null;
+                //int studentid1 = myTranscript.getInt("studentID");
+                //thistranstript = new KnightEDU.Transcript(studentid1);
                 String prefix = myTranscript.getString("courseID").substring(0,3);
                 String number = myTranscript.getString("courseID").substring(3,7);
                 CourseID courseId = CourseID.PNS.create(prefix,number,"");
@@ -1124,6 +1125,41 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     }
 
     public KnightEDU.Transcript getTranscript(int studentID) {
-        throw new UnsupportedOperationException("Not supported yet.");
+
+        try {
+            Statement s;
+            ResultSet myTranscript;
+            s = conn.createStatement();
+            String queryString = "select * from Transcript T WHERE T.studentID = ";
+            queryString = queryString + Integer.toString(studentID);
+            myTranscript = s.executeQuery(queryString);
+            KnightEDU.Transcript  thistranstript = new KnightEDU.Transcript(studentID);
+            while(myTranscript.next())
+            {
+                String prefix = myTranscript.getString("courseID").substring(0,3);
+                String number = myTranscript.getString("courseID").substring(3,7);
+                CourseID courseId = CourseID.PNS.create(prefix,number,"");
+                int thisterm = myTranscript.getInt("TERM");
+                int thisyear = myTranscript.getInt("yearOffered");
+                int thisgradetype = myTranscript.getInt("gradeType");
+                String thisgrade = myTranscript.getString("grade");
+                int thiscredits = myTranscript.getInt("credits");
+
+                if (thisterm == 0)
+                    thistranstript.addEntry(courseId, thisyear, KnightEDU.Term.FALL, KnightEDU.Grade.Type.LETTER, KnightEDU.Grade.Letter.create(thisgrade), thiscredits);
+                else if (thisterm == 1)
+                    thistranstript.addEntry(courseId, thisyear, KnightEDU.Term.SPRING, KnightEDU.Grade.Type.LETTER, KnightEDU.Grade.Letter.create(thisgrade), thiscredits);
+                else if (thisterm == 2)
+                    thistranstript.addEntry(courseId, thisyear, KnightEDU.Term.SUMMER, KnightEDU.Grade.Type.LETTER, KnightEDU.Grade.Letter.create(thisgrade), thiscredits);
+                else if (thisterm == 3)
+                    thistranstript.addEntry(courseId, thisyear, KnightEDU.Term.OCCASIONAL, KnightEDU.Grade.Type.LETTER, KnightEDU.Grade.Letter.create(thisgrade), thiscredits);
+
+            }
+            return thistranstript;
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }

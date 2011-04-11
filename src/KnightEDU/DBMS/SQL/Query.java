@@ -344,6 +344,8 @@ public class Query {
             if (hasPrevious) whereClause += " AND ";
             if (descriptionQuery != null && !descriptionQuery.equals(""))
                 whereClause +=  descriptionQuery;
+            //return DBMS.queryCourse(whereClause, "", "");
+            //return null;
 
            ResultSet resultSet = DBMS.query("Courses", whereClause, "", "");
            Set<KnightEDU.Course> r_val = new HashSet();
