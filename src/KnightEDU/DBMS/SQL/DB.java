@@ -1086,26 +1086,26 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             Statement s;
             ResultSet myInstructor;
             s = conn.createStatement();
-            String queryString = "select * from InstructorTeaches I WHERE I.instructorID = ";
+            String queryString = "select * from Classes C WHERE C.instructorID = ";
             String instructorid = Integer.toString(instructorID);
             queryString = queryString + instructorid;
             myInstructor = s.executeQuery(queryString);
             Instructor r_val = new Instructor(instructorID);
             while (myInstructor.next())
             {
+                int myclassid = myInstructor.getInt("id");
                 
-                int myclassid = myInstructor.getInt("classID");
-
-                KnightEDU.Instructor myIns = new KnightEDU.Instructor(myclassid);
-
-                return myIns;
-               //TODO
+                r_val.addClassID(myclassid);
             }
-            return null;
+            return r_val;
         }
         catch (SQLException ex) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public KnightEDU.Transcript getTranscript(int studentID) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
