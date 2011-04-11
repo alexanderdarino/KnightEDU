@@ -1,5 +1,7 @@
 package KnightEDU;
 
+import java.util.HashMap;
+
 /**
  * Represents an academic term.
  *
@@ -26,4 +28,5 @@ public enum Term {
      * Irregular terms
      */
     OCCASIONAL;
+
 }

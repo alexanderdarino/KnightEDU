@@ -89,7 +89,7 @@ public interface Course {
          * @param year
          * @return
          */
-        public KnightEDU.Course.Offering getCourseOffering(CourseID courseID, Term term, int year);
+        public KnightEDU.Course.Offering getCourseOffering(String courseID, Term term, int year);
         /**
          *
          * @param courseID

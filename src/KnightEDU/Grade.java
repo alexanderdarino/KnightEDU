@@ -12,6 +12,8 @@ public abstract class Grade implements Comparable<Grade>{
      */
     public abstract double numericEquivalent();
 
+    public abstract Type getType();
+
     /**
      * Compares two grades based on their numerically equivalent values
      * @param o grade to be compared
@@ -81,6 +83,14 @@ public abstract class Grade implements Comparable<Grade>{
             return create(letter, '\0');
         }
 
+        public static Letter create(String letterGrade)
+        {
+            if(letterGrade.length() == 1) return create(letterGrade.charAt(0));
+            if(letterGrade.length() == 2) return create(letterGrade.charAt(0), letterGrade.charAt(1));
+            return null;
+
+        }
+
         /**
          Constructs a new Grade.Letter object
          @param letter the letter grade
@@ -123,6 +133,11 @@ public abstract class Grade implements Comparable<Grade>{
         @Override
         public String toString() {
             return String.valueOf(letter) + suffix;
+        }
+
+        @Override
+        public Type getType() {
+            return Type.LETTER;
         }
     }
 
@@ -175,6 +190,11 @@ public abstract class Grade implements Comparable<Grade>{
         @Override
         public String toString() {
             return satisfactory ? "S" : "U";
+        }
+
+        @Override
+        public Type getType() {
+            return Type.SU;
         }
     }
 }

@@ -8,7 +8,11 @@ package KnightEDU.DBMS.SQL;
 import KnightEDU.Course;
 import KnightEDU.CourseID;
 import KnightEDU.Credits;
+import KnightEDU.DBMS.Query.Employee;
+import KnightEDU.DBMS.Query.Transcript;
+import KnightEDU.Grade;
 import KnightEDU.Grade.Type;
+import KnightEDU.Instructor;
 import KnightEDU.Term;
 import KnightEDU.Class;
 import KnightEDU.Days;
@@ -21,7 +25,7 @@ import java.util.logging.Logger;
  *
  * @author Alexander Darino
  */
-public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, KnightEDU.DBMS.Section, KnightEDU.DBMS.Course.Offering, KnightEDU.DBMS.Class, KnightEDU.DBMS.Component
+public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, KnightEDU.DBMS.Section, KnightEDU.DBMS.Course.Offering, KnightEDU.DBMS.Class, KnightEDU.DBMS.Component, KnightEDU.DBMS.Employee, KnightEDU.DBMS.Transcript.Entry, KnightEDU.DBMS.Instructor
 {
     /**
      *
@@ -44,7 +48,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     /**
      *
      */
-    protected String dbName="C:\\universityDB\\universityDB";
+    protected String dbName="C:\\universityDB";
 
     /**
      *
@@ -119,7 +123,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
         //map.put("SchemaName.ADDRESS", Address.class);
         //rs.next();
         //Struct address = (Struct)rs.getObject("LOCATION");
-        return null;
+        return new KnightEDU.DBMS.SQL.Query.Course(this);
     }
 
     public Course addCourse(String courseID, String name, String description, Credits credits, Type gradeType)
@@ -425,14 +429,14 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Course.Offering getCourseOffering(CourseID courseID, Term term, int year)
+    public Course.Offering getCourseOffering(String courseID, Term term, int year)
     {
         try {
             Statement s;
             ResultSet myCourseOffering;
             s = conn.createStatement();
             String queryString = "select * from CourseOffered C WHERE C.COURSEID = '";
-            queryString = queryString + courseID.toString() + "'";
+            queryString = queryString + courseID + "'";
             queryString = queryString + " AND C.TERM = '";
             queryString = queryString + term.toString() + "'";
             queryString = queryString + " AND C.yearOffered = ";
@@ -510,17 +514,18 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
 
     public KnightEDU.DBMS.Query.Course.Offering queryCourseOffering()
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new Query.Course.Offering(this);
     }
 
-    public Class addClass(int classID, int sectionID, int sectionNumber, int capacity)
+    public Class addClass(int classID, int sectionID, int sectionNumber, int capacity, int instructorID)
     {
         try {
             PreparedStatement psInsert;
-            psInsert = conn.prepareStatement("insert into CLASSES(id, sectionID, sectionNum) values (?,?,?) ");
+            psInsert = conn.prepareStatement("insert into CLASSES(id, sectionID, sectionNum, instructorID) values (?,?,?,?) ");
             psInsert.setInt(1,classID);
             psInsert.setInt(2,sectionID);
             psInsert.setInt(3,sectionNumber);
+            psInsert.setInt(4,instructorID);
             //psInsert.setInt(4,capacity);
             psInsert.executeUpdate();
         }
@@ -573,7 +578,8 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             {
                 int secID = myClass.getInt("sectionID");
                 int secNumber = myClass.getInt("sectionNum");
-                KnightEDU.Class myclass = new KnightEDU.Class(classID, secID, secNumber, 100);
+                int instructorID = myClass.getInt("instructorID");
+                KnightEDU.Class myclass = new KnightEDU.Class(classID, secID, secNumber, 100, instructorID);
 
                 return myclass;
                 //TODO
@@ -614,15 +620,16 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             PreparedStatement psUpdate;
-            psUpdate = conn.prepareStatement("update CLASSES C SET SECTIONID = ?, sectionNum = ? WHERE C.ID = (?)");
+            psUpdate = conn.prepareStatement("update CLASSES C SET SECTIONID = ?, sectionNum = ? , instructorID = ? WHERE C.ID = (?)");
             //psUpdate.setInt(1,componentOffering.getComponentID());
             psUpdate.setInt(1,classObj.getSectionID());
             psUpdate.setInt(2,classObj.getSectionNumber());
+            psUpdate.setInt(3,classObj.getInstructorID());
             //psUpdate.setInt(3,classObj.getCapacity());
             //psUpdate.setString(5,course.getDescription());
             //psUpdate.setString(6,course.getCredits().toString());
             //psUpdate.setString(7,course.getGradeType().toString());
-            psUpdate.setInt(3,classObj.getID());
+            psUpdate.setInt(4,classObj.getID());
             psUpdate.executeUpdate();
         }
         catch (SQLException ex) {
@@ -726,7 +733,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
 
     public KnightEDU.DBMS.Query.Component queryComponent()
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new Query.Component(this);
     }
 
     public void removeComponent(int componentID)
@@ -778,7 +785,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    private ResultSet query(String tables, String whereClause, String groupByClause, String havingClause)
+    protected ResultSet query(String tables, String whereClause, String groupByClause, String havingClause)
     {
         try {
             Statement s;
@@ -809,5 +816,331 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     public boolean isValidCourseID(String courseID)
     {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Employee queryEmployee() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public KnightEDU.Employee addEmployee(int employeeID, String firstName, String lastName) {
+
+        try {
+            //Statement s;
+            //ResultSet myResults;
+            //s = conn.createStatement();
+            //String queryString = "select MAX (E.id) from Employees E";
+            //myResults = s.executeQuery(queryString);
+            //int maxID = 0;
+            //if (myResults.wasNull())
+            //{
+            //    maxID = 0;
+            //}
+            //else while(myResults.next())
+            //{
+            //   maxID = myResults.getInt("1");
+            //}
+            //int nextID = maxID + 1;
+            PreparedStatement psInsert;
+            psInsert = conn.prepareStatement("insert into Employees (id, fname, lname) values (?,?,?)");
+            psInsert.setInt(1,employeeID);
+            psInsert.setString(2,firstName);
+            psInsert.setString(3,lastName);
+            //psInsert.setInt(4,primaryComponentID);
+            psInsert.executeUpdate();
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public boolean containsEmployee(int employeeID) {
+
+        try {
+            Statement s;
+            ResultSet myEmployee;
+            s = conn.createStatement();
+            String queryString = "select * from Employees E WHERE E.ID = ";
+            String componentid = Integer.toString(employeeID);
+            queryString = queryString + componentid;
+
+            myEmployee = s.executeQuery(queryString);
+            while (myEmployee.next())
+            {
+               if (myEmployee != null)
+               return true;
+            }
+            return false;
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public KnightEDU.Employee getEmployee(int employeeID) {
+        try {
+            Statement s;
+            ResultSet myEmployee;
+            s = conn.createStatement();
+            String queryString = "select * from Employees E WHERE E.ID = ";
+            String componentid = Integer.toString(employeeID);
+            queryString = queryString + componentid;
+            myEmployee = s.executeQuery(queryString);
+            while (myEmployee.next())
+            {
+                KnightEDU.Employee  myemp = null;
+                String firstname = myEmployee.getString("fname");
+                String lastname = myEmployee.getString("lname");
+                myemp = new KnightEDU.Employee(employeeID, firstname, lastname);
+
+                return myemp;
+               //TODO
+            }
+            return null;
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public void updateEmployee(KnightEDU.Employee employee) {
+        
+        try {
+            PreparedStatement psUpdate;
+            psUpdate = conn.prepareStatement("update Employees E SET fname = ? , lname = ? WHERE E.ID = (?)");
+            //psUpdate.setInt(1,componentOffering.getComponentID());
+            psUpdate.setString(1,employee.getFirstName());
+            psUpdate.setString(2,employee.getLastName());
+            //psUpdate.setInt(3,classObj.getCapacity());
+            //psUpdate.setString(5,course.getDescription());
+            //psUpdate.setString(6,course.getCredits().toString());
+            //psUpdate.setString(7,course.getGradeType().toString());
+            psUpdate.setInt(3,employee.getId());
+            psUpdate.executeUpdate();
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void removeEmployee(int employeeID) {
+        
+        try {
+            PreparedStatement psDelete;
+            psDelete = conn.prepareStatement("delete FROM Employees E WHERE E.ID = (?)");
+            psDelete.setInt(1,employeeID);
+            psDelete.executeUpdate();
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public Transcript queryTranscript() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public KnightEDU.Transcript.Entry addTranscriptEntry(int studentID, KnightEDU.CourseID courseID, int year, Term term, Grade grade, int credits) {
+        
+        try {
+
+
+            PreparedStatement psInsert;
+            psInsert = conn.prepareStatement("insert into Transcript (studentID, courseID, yearOffered, term, grade, credits) values (?,?,?,?,?,?)");
+            psInsert.setInt(1,studentID);
+            psInsert.setString(2,courseID.toString());
+            psInsert.setInt(3,year);
+            psInsert.setInt(4,term.ordinal());
+            psInsert.setString(5,grade.toString());
+            psInsert.setInt(6,credits);
+            psInsert.executeUpdate();
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public boolean containsTranscriptEntry(int studentID, KnightEDU.CourseID courseID, int year, Term term) {
+        
+        try {
+            Statement s;
+            ResultSet myTranscript;
+            s = conn.createStatement();
+            String queryString = "select * from Transcript T WHERE T.studentID = ";
+            queryString = queryString + Integer.toString(studentID);
+            queryString = queryString + " AND T.courseID = '";
+            queryString = queryString + courseID.toString() + "'";
+            queryString = queryString + " AND T.yearOffered = ";
+            String newyear = Integer.toString(year);
+            queryString = queryString + newyear.toString();
+            queryString = queryString + " AND T.term = ";
+            queryString = queryString + term.ordinal();
+            myTranscript = s.executeQuery(queryString);
+            while (myTranscript.next())
+            {
+               if (myTranscript != null)
+               return true;
+            }
+            return false;
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public KnightEDU.Transcript.Entry getTranscriptEntry(int studentID, KnightEDU.CourseID courseID, int year, Term term) {
+
+        try {
+            Statement s;
+            ResultSet myTranscript;
+            s = conn.createStatement();
+            String queryString = "select * from Transcript T WHERE T.studentID = ";
+            queryString = queryString + Integer.toString(studentID);
+            queryString = queryString + " AND T.courseID = '";
+            queryString = queryString + courseID.toString() + "'";
+            queryString = queryString + " AND T.yearOffered = ";
+            String newyear = Integer.toString(year);
+            queryString = queryString + newyear.toString();
+            queryString = queryString + " AND T.term = ";
+            queryString = queryString + term.ordinal();
+            myTranscript = s.executeQuery(queryString);
+            myTranscript.next();
+            
+                KnightEDU.Transcript  thistranstript = null;
+                int studentid1 = myTranscript.getInt("studentID");
+                thistranstript = new KnightEDU.Transcript(studentid1);
+                String prefix = myTranscript.getString("courseID").substring(0,3);
+                String number = myTranscript.getString("courseID").substring(3,7);
+                CourseID courseId = CourseID.PNS.create(prefix,number,"");
+                int thisterm = myTranscript.getInt("TERM");
+                int thisyear = myTranscript.getInt("yearOffered");
+                int thisgradetype = myTranscript.getInt("gradeType");
+                String thisgrade = myTranscript.getString("grade");
+                int thiscredits = myTranscript.getInt("credits");
+
+                KnightEDU.Transcript.Entry myentry = null;
+                if (thisterm == 0)
+                    myentry = new KnightEDU.Transcript.Entry(courseId, thisyear, KnightEDU.Term.FALL, KnightEDU.Grade.Type.LETTER, KnightEDU.Grade.Letter.create(thisgrade), thiscredits);
+                else if (thisterm == 1)
+                   myentry = new KnightEDU.Transcript.Entry(courseId, thisyear, KnightEDU.Term.SPRING, KnightEDU.Grade.Type.LETTER, KnightEDU.Grade.Letter.create(thisgrade), thiscredits);
+                else if (thisterm == 2)
+                    myentry = new KnightEDU.Transcript.Entry(courseId, thisyear, KnightEDU.Term.SUMMER, KnightEDU.Grade.Type.LETTER, KnightEDU.Grade.Letter.create(thisgrade), thiscredits);
+                else if (thisterm == 3)
+                    myentry = new KnightEDU.Transcript.Entry(courseId, thisyear, KnightEDU.Term.OCCASIONAL, KnightEDU.Grade.Type.LETTER, KnightEDU.Grade.Letter.create(thisgrade), thiscredits);
+
+                return myentry;
+               //TODO
+            
+           
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public void updateTranscriptEntry(int studentID, KnightEDU.Transcript.Entry transcriptEntry) {
+        
+        try {
+            PreparedStatement psUpdate;
+            psUpdate = conn.prepareStatement("update Transcript T SET  courseID = ? , yearOffered = ? , term = ? , gradeType = ? , grade = ? , credits = ? WHERE T.studentID = (?)");
+            //psUpdate.setInt(1,componentOffering.getComponentID());
+            
+            psUpdate.setString(1,transcriptEntry.getCourseID().toString());
+            psUpdate.setInt(2,transcriptEntry.getYear());
+            psUpdate.setInt(3,transcriptEntry.getTerm().ordinal());
+            psUpdate.setInt(4,transcriptEntry.getGradeType().ordinal());
+            psUpdate.setString(5,transcriptEntry.getGrade().toString());
+            psUpdate.setInt(6,transcriptEntry.getCredits());
+            psUpdate.setInt(7,studentID);
+            psUpdate.executeUpdate();
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void removeTranscriptEntry(int studentID, KnightEDU.CourseID courseID, int year, Term term) {
+        
+        try {
+            PreparedStatement psDelete;
+            psDelete = conn.prepareStatement("delete FROM Transcript T WHERE T.studentID = ? AND T.courseID = ? AND T.yearOffered = ? AND T.term = ? ");
+            psDelete.setInt(1,studentID);
+            psDelete.setString(2,courseID.toString());
+            psDelete.setInt(3,year);
+            psDelete.setInt(4,term.ordinal());
+            psDelete.executeUpdate();
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public Instructor getInstructor(int instructorID) {
+        
+        try {
+            Statement s;
+            ResultSet myInstructor;
+            s = conn.createStatement();
+            String queryString = "select * from Classes C WHERE C.instructorID = ";
+            String instructorid = Integer.toString(instructorID);
+            queryString = queryString + instructorid;
+            myInstructor = s.executeQuery(queryString);
+            Instructor r_val = new Instructor(instructorID);
+            while (myInstructor.next())
+            {
+                int myclassid = myInstructor.getInt("id");
+                
+                r_val.addClassID(myclassid);
+            }
+            return r_val;
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public KnightEDU.Transcript getTranscript(int studentID) {
+
+        try {
+            Statement s;
+            ResultSet myTranscript;
+            s = conn.createStatement();
+            String queryString = "select * from Transcript T WHERE T.studentID = ";
+            queryString = queryString + Integer.toString(studentID);
+            myTranscript = s.executeQuery(queryString);
+            KnightEDU.Transcript  thistranstript = new KnightEDU.Transcript(studentID);
+            while(myTranscript.next())
+            {
+                String prefix = myTranscript.getString("courseID").substring(0,3);
+                String number = myTranscript.getString("courseID").substring(3,7);
+                CourseID courseId = CourseID.PNS.create(prefix,number,"");
+                int thisterm = myTranscript.getInt("TERM");
+                int thisyear = myTranscript.getInt("yearOffered");
+                int thisgradetype = myTranscript.getInt("gradeType");
+                String thisgrade = myTranscript.getString("grade");
+                int thiscredits = myTranscript.getInt("credits");
+
+                if (thisterm == 0)
+                    thistranstript.addEntry(courseId, thisyear, KnightEDU.Term.FALL, KnightEDU.Grade.Type.LETTER, KnightEDU.Grade.Letter.create(thisgrade), thiscredits);
+                else if (thisterm == 1)
+                    thistranstript.addEntry(courseId, thisyear, KnightEDU.Term.SPRING, KnightEDU.Grade.Type.LETTER, KnightEDU.Grade.Letter.create(thisgrade), thiscredits);
+                else if (thisterm == 2)
+                    thistranstript.addEntry(courseId, thisyear, KnightEDU.Term.SUMMER, KnightEDU.Grade.Type.LETTER, KnightEDU.Grade.Letter.create(thisgrade), thiscredits);
+                else if (thisterm == 3)
+                    thistranstript.addEntry(courseId, thisyear, KnightEDU.Term.OCCASIONAL, KnightEDU.Grade.Type.LETTER, KnightEDU.Grade.Letter.create(thisgrade), thiscredits);
+
+            }
+            return thistranstript;
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }

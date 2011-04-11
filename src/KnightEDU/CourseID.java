@@ -4,13 +4,13 @@ package KnightEDU;
  * @author Alexander Darino
  * @version 03/12/11
  */
-public abstract class CourseID implements Comparable<CourseID>{
+public class CourseID implements Comparable<CourseID>{
 
     /**
 
      @param encoding
      */
-    protected CourseID(String encoding)
+    public CourseID(String encoding)
     {
         this.encoding = encoding;
     }
