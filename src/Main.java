@@ -15,8 +15,9 @@ import java.util.Set;
 public class Main {
     public static void main (String args[])
     {
+// TEST: Navigate through your course query - keep track of the hierarchy of information!!!
 //        KnightEDU.DBMS.SQL.DB db = new KnightEDU.DBMS.SQL.DB(3,4,1);
-//        Set<Course.Offering> courseOfferings = db.queryCourseOffering().offeredTerm(Term.FALL).invoke();
+//        Set<Course.Offering> courseOfferings = db.queryCourseOffering().offeredTerm(Term.SPRING).invoke();
 //        for (Course.Offering courseOffering : courseOfferings)
 //        {
 //            Set<Integer> componentIDs = db.queryComponent().getComponentIDs(courseOffering.getPrimaryComponentID());
@@ -47,9 +48,9 @@ public class Main {
 //        KnightEDU.DBMS.SQL.DB db = new KnightEDU.DBMS.SQL.DB(3,4,1);
 //        KnightEDU.Employee result = db.getEmployee(1);
 
-// TEST:  Pull up the student transcript:
-        KnightEDU.DBMS.SQL.DB db = new KnightEDU.DBMS.SQL.DB(3,4,1);
-        KnightEDU.Transcript result = db.getTranscript(123456);
+//// TEST:  Pull up the student transcript:
+//        KnightEDU.DBMS.SQL.DB db = new KnightEDU.DBMS.SQL.DB(3,4,1);
+//        KnightEDU.Transcript result = db.getTranscript(123456);
         
         System.out.println();
 

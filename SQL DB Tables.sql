@@ -71,7 +71,7 @@ CREATE TABLE Employees (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE Transcript (
+CREATE TABLE Transcripts (
     studentID INT,
     courseID CHAR(8),
     yearOffered INT,

@@ -1130,7 +1130,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             Statement s;
             ResultSet myTranscript;
             s = conn.createStatement();
-            String queryString = "select * from Transcript T WHERE T.studentID = ";
+            String queryString = "select * from Transcripts T WHERE T.studentID = ";
             queryString = queryString + Integer.toString(studentID);
             myTranscript = s.executeQuery(queryString);
             KnightEDU.Transcript  thistranstript = new KnightEDU.Transcript(studentID);

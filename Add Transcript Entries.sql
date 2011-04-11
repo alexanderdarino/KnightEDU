@@ -9,4 +9,4 @@
     PRIMARY KEY (studentID, courseID, yearOffered, term),
     FOREIGN KEY (studentID) REFERENCES Employees(id)); */
 
-INSERT INTO TRANSCRIPT VALUES( 123456, ENC1101, 2011, 1, 'B+', 3);
+INSERT INTO TRANSCRIPTS(studentID, courseID, yearOffered, term, gradeType, grade, credits) VALUES( 123456, 'ENC1101', 2011, 1, 0, 'B+', 3);

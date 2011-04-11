@@ -7,3 +7,4 @@ run 'C:\\universityDB\\Add Components.sql';
 run 'C:\\universityDB\\Add ComponentClasses.sql';
 run 'C:\\universityDB\\Add ComponentGroups.sql';
 run 'C:\\universityDB\\Add Course Offerings.sql';
+run 'C:\\universityDB\\Add Transcript Entries.sql';
