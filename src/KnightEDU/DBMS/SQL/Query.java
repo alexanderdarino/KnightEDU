@@ -264,7 +264,8 @@ public class Query {
             if (hasPrevious) whereClause += " AND ";
             if (descriptionQuery != null && !descriptionQuery.equals(""))
                 whereClause +=  descriptionQuery;
-            return DBMS.queryCourse(whereClause, "", "");
+            //return DBMS.queryCourse(whereClause, "", "");
+            return null;
         }
 
     }

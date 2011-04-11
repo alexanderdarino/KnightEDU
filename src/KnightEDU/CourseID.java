@@ -163,7 +163,8 @@ public abstract class CourseID implements Comparable<CourseID>{
          */
         protected static boolean isValidSuffix(String s)
         {
-            return isValidPrefix(s);
+            return true;
+            //return isValidPrefix(s);
         }
 
     }

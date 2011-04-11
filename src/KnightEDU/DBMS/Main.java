@@ -22,10 +22,11 @@ public class Main {
         //KnightEDU.Course newCourse = KnightEDU.Course.create(KnightEDU.CourseID.PNS.create("COP", "5011", ""), "Intro to your course", "your course", KnightEDU.Credits.createCredits(3), KnightEDU.Grade.Type.LETTER);
         //db.updateCourse(newCourse);
         //db.removeCourse("COP5011");
-        //Days days = KnightEDU.Days.TR;
-        //Location location = new KnightEDU.Location.BR("HEC","100");
-        //db.addSection(days, location, 1000, 1200);
-        //db.getSection("1");
+        //Days days = KnightEDU.Days.MWF;
+        //Location location = new KnightEDU.Location.BR("HEC","101");
+        //db.addSection(days, location, 1100, 1200);
+        //db.removeSection("3");
+        //db.getSection("3");
         //KnightEDU.Section section = KnightEDU.Section.create(1, Days.M, 1100, 1200, "HEC-101");
         //db.containsSection("1");
         //db.updateSection(section);
@@ -42,11 +43,13 @@ public class Main {
         //db.removeClass(1);
         //KnightEDU.Class updateClass = new KnightEDU.Class(1, 1, 2000, 200);
         //db.updateClass(updateClass);
+        //db.addComponent(KnightEDU.Component.Type.INDEPENDENT_STUDY);
+        //db.removeComponent(1);
         //db.containsComponent(1);
         //db.getComponent(1);
         //KnightEDU.Component updateComponent = new KnightEDU.Component(1,2);
         //db.updateComponent(null);
-        db.removeComponent(1);
+        //db.removeComponent(1);
         db.closeDB();
 
     }
