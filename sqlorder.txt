@@ -1,8 +1,9 @@
-run 'C:\\universityDB\\SQL DB Tables.sql'
-run 'C:\\universityDB\\Add Section.sql'
-run 'C:\\universityDB\\Add Courses.sql'
-run 'C:\\universityDB\\Add Classes.sql'
-run 'C:\\universityDB\\Add Components.sql'
-run 'C:\\universityDB\\Add ComponentClasses.sql'
-run 'C:\\universityDB\\Add ComponentGroups.sql'
-run 'C:\\universityDB\\Add Course Offerings.sql'
+run 'C:\\universityDB\\SQL DB Tables.sql';
+run 'C:\\universityDB\\Add Sections.sql';
+run 'C:\\universityDB\\Add Courses and Course Schedules.sql';
+run 'C:\\universityDB\\Add Employees.sql';
+run 'C:\\universityDB\\Add Classes.sql';
+run 'C:\\universityDB\\Add Components.sql';
+run 'C:\\universityDB\\Add ComponentClasses.sql';
+run 'C:\\universityDB\\Add ComponentGroups.sql';
+run 'C:\\universityDB\\Add Course Offerings.sql';

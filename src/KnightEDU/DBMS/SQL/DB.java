@@ -17,7 +17,11 @@ import KnightEDU.Term;
 import KnightEDU.Class;
 import KnightEDU.Days;
 import KnightEDU.Location;
+import KnightEDU.Prerequisites;
+import KnightEDU.YearParity;
 import java.sql.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -130,7 +134,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             PreparedStatement psInsert = null;
-            String sql = "insert into COURSE(ID, NAME, DESCRIPTION, CREDITSMIN, CREDITSMAX, PREREQUISITES) values (?,?,?,?,?,?)";
+            String sql = "insert into COURSES(ID, NAME, DESCRIPTION, CREDITSMIN, CREDITSMAX, PREREQUISITES) values (?,?,?,?,?,?)";
             psInsert = conn.prepareStatement(sql);
             psInsert.setString(1,courseID);
             psInsert.setString(2,name);
@@ -185,8 +189,9 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
                 int maxCredit = myCourses.getInt("CREDITSMAX");
                 String prefix = myCourses.getString("ID").substring(0,3);
                 String number = myCourses.getString("ID").substring(3,7);
-                CourseID courseId = CourseID.PNS.create(prefix,number,"");
-                Course thisCourse = Course.create(courseId,myCourses.getString("NAME"), myCourses.getString("DESCRIPTION"), Credits.createCredits(minCredit, maxCredit), Type.LETTER );
+                CourseID courseIDObj = CourseID.PNS.create(prefix,number,"");
+                Prerequisites prerequisites = new Prerequisites(myCourses.getString("prerequisites"));
+                Course thisCourse = Course.create(courseIDObj,myCourses.getString("NAME"), myCourses.getString("DESCRIPTION"), Credits.createCredits(minCredit, maxCredit), Type.LETTER, prerequisites, getCourseSchedules(courseIDObj));
                 return thisCourse;
                 //TODO
             }
@@ -197,6 +202,19 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
         }
         return null;
         //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    protected Set<Course.Schedule> getCourseSchedules(CourseID courseID) throws SQLException
+    {
+        Set<Course.Schedule> r_val = new HashSet();
+        Statement s = conn.createStatement();
+        String queryString = "SELECT * FROM CourseSchedules CS WHERE CS.COURSEID='" + courseID.toString() + "'";
+        ResultSet schedules = s.executeQuery(queryString);
+        while (schedules.next())
+        {
+            r_val.add(new Course.Schedule(Term.values()[schedules.getInt("term")], YearParity.values()[schedules.getInt("yearParity")]));
+        }
+        return r_val;
     }
 
     public void updateCourse(Course course)

@@ -18,7 +18,7 @@ public class Prerequisites{
     /**
 
      */
-    protected Prerequisites()
+    public Prerequisites()
     {
         encoding = "";
     }
@@ -27,7 +27,7 @@ public class Prerequisites{
 
      @param encoding
      */
-    protected Prerequisites(String encoding)
+    public Prerequisites(String encoding)
     {
         this.encoding = encoding;
     }

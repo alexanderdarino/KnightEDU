@@ -2,6 +2,7 @@ package KnightEDU.DBMS.SQL;
 
 import KnightEDU.DBMS.SQL.Query.CourseID.PNS;
 import KnightEDU.Grade.Type;
+import KnightEDU.Prerequisites;
 import KnightEDU.Term;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -344,7 +345,7 @@ public class Query {
             if (descriptionQuery != null && !descriptionQuery.equals(""))
                 whereClause +=  descriptionQuery;
 
-           ResultSet resultSet = DBMS.query("Course", whereClause, "", "");
+           ResultSet resultSet = DBMS.query("Courses", whereClause, "", "");
            Set<KnightEDU.Course> r_val = new HashSet();
             try {
                 while (resultSet.next()) {
@@ -352,12 +353,14 @@ public class Query {
                     int maxCredit = resultSet.getInt("CREDITSMAX");
                     String prefix = resultSet.getString("ID").substring(0,3);
                     String number = resultSet.getString("ID").substring(3,7);
-                    KnightEDU.CourseID courseId = KnightEDU.CourseID.PNS.create(prefix,number,"");
+                    KnightEDU.CourseID courseID = KnightEDU.CourseID.PNS.create(prefix,number,"");
+                    Prerequisites prerequisites = new Prerequisites(resultSet.getString("prerequisites"));
+                    Set<KnightEDU.Course.Schedule> schedule = DBMS.getCourseSchedules(courseID);
                     KnightEDU.Course thisCourse = KnightEDU.Course.create(
-                            courseId,resultSet.getString("NAME"),
+                            courseID,resultSet.getString("NAME"),
                             resultSet.getString("DESCRIPTION"),
                             KnightEDU.Credits.createCredits(minCredit, maxCredit),
-                            Type.LETTER );
+                            Type.LETTER, prerequisites, schedule);
                     r_val.add(thisCourse);
 
                 }

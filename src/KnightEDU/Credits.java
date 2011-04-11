@@ -31,6 +31,7 @@ public abstract class Credits
     public static Credits createCredits(int creditsMin, int creditsMax)
     {
         if (creditsMin < 0 || creditsMax < creditsMin) return null;
+        if (creditsMin == creditsMax) return new Credits.Fixed(creditsMin);
         return new Credits.Variable(creditsMin, creditsMax);
     }
 
@@ -73,6 +74,12 @@ public abstract class Credits
             super(credits);
         }
 
+        @Override
+        public String toString()
+        {
+            return Integer.toString(creditsMin);
+        }
+
         /**
          Returns the quantity of credits that can be earned
          @return quantity of credits that can be earned
@@ -103,6 +110,12 @@ public abstract class Credits
         {
             super(creditsMin);
             this.creditsMax = creditsMax;
+        }
+
+        @Override
+        public String toString()
+        {
+            return creditsMin + "-" + creditsMax;
         }
 
         /**
