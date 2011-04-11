@@ -15,9 +15,9 @@ public class Transcript {
 
     Set<Entry> entries = new HashSet();
 
-    public void addEntry(CourseID courseID, int year, Term term, Grade grade, int credits)
+    public void addEntry(CourseID courseID, int year, Term term, Grade.Type gradeType, Grade grade, int credits)
     {
-        entries.add(new Entry(courseID, year, term, grade, credits));
+        entries.add(new Entry(courseID, year, term, gradeType, grade, credits));
     }
 
     public Set<Entry> getEntries()
@@ -25,18 +25,20 @@ public class Transcript {
         return Collections.unmodifiableSet(entries);
     }
 
-    public class Entry {
+    public static class Entry {
         protected CourseID courseID;
         protected int year;
         protected Term term;
+        protected Grade.Type gradeType;
         protected Grade grade;
 
-        public Entry(CourseID courseID, int year, Term term, Grade grade, int credits) {
+        public Entry(CourseID courseID, int year, Term term, Grade.Type gradeType, Grade grade, int credits) {
             this.courseID = courseID;
             this.year = year;
             this.term = term;
             this.grade = grade;
             this.credits = credits;
+            this.gradeType = gradeType;
         }
 
         public CourseID getCourseID() {
@@ -45,6 +47,10 @@ public class Transcript {
 
         public int getCredits() {
             return credits;
+        }
+
+        public Grade.Type getGradeType() {
+            return gradeType;
         }
 
         public Grade getGrade() {

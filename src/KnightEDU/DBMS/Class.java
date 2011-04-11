@@ -22,7 +22,7 @@ public interface Class {
      * @param capacity
      * @return
      */
-    public KnightEDU.Class addClass(int classID, int sectionID, int sectionNumber, int capacity);
+    public KnightEDU.Class addClass(int classID, int sectionID, int sectionNumber, int capacity, int instructorID);
     /**
      *
      @param classID

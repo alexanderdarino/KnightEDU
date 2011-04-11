@@ -46,7 +46,20 @@ public class Main {
         //db.getComponent(1);
         //KnightEDU.Component updateComponent = new KnightEDU.Component(1,2);
         //db.updateComponent(null);
-        db.removeComponent(1);
+        //db.removeComponent(1);
+       //db.addEmployee(12345, "John", "Adam");
+        //db.containsEmployee(1);
+        //db.getEmployee(12345);
+        //KnightEDU.Employee emp = new KnightEDU.Employee(12345, "bob", "Dole");
+        //db.updateEmployee(emp);
+        //db.removeEmployee(1);
+        KnightEDU.CourseID newCourseID = KnightEDU.CourseID.PNS.create("COP","3503","");
+       // db.addTranscriptEntry(12345, newCourseID, 2011, KnightEDU.Term.FALL, KnightEDU.Grade.Letter.create("A"), 3);
+        //db.containsTranscriptEntry(12345, newCourseID, 2011, KnightEDU.Term.FALL);
+        //db.getTranscriptEntry(12345, newCourseID, 2011, KnightEDU.Term.FALL);
+        KnightEDU.Transcript.Entry myentry = new KnightEDU.Transcript.Entry(newCourseID, 2011, KnightEDU.Term.SPRING, KnightEDU.Grade.Type.LETTER, KnightEDU.Grade.Letter.create("A"), 3);
+        //db.updateTranscriptEntry(12345, myentry);
+        db.removeTranscriptEntry(12345, newCourseID, 2011, KnightEDU.Term.SPRING);
         db.closeDB();
 
     }

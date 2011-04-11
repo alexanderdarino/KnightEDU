@@ -16,6 +16,6 @@ public interface Employee {
     public boolean containsEmployee(int employeeID);
     public KnightEDU.Employee getEmployee (int employeeID);
     public void updateEmployee(KnightEDU.Employee employee);
-    public void remoteEmployee(int employeeID);
+    public void removeEmployee(int employeeID);
 
 }

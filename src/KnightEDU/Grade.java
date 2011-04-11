@@ -83,6 +83,14 @@ public abstract class Grade implements Comparable<Grade>{
             return create(letter, '\0');
         }
 
+        public static Letter create(String letterGrade)
+        {
+            if(letterGrade.length() == 1) return create(letterGrade.charAt(0));
+            if(letterGrade.length() == 2) return create(letterGrade.charAt(0), letterGrade.charAt(1));
+            return null;
+
+        }
+
         /**
          Constructs a new Grade.Letter object
          @param letter the letter grade

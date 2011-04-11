@@ -42,6 +42,7 @@ CREATE TABLE Classes (
     id INT,
     sectionID INT,
     sectionNum INT,
+    instructorID INT,
     PRIMARY KEY (id),
     FOREIGN KEY (sectionID) REFERENCES Sections(id));
 
@@ -69,16 +70,17 @@ CREATE TABLE Transcript (
     courseID CHAR(8),
     yearOffered INT,
     term INT,
-    grade INT,
+    gradeType int,
+    grade CHAR(3),
     credits INT,
-    PRIMARY KEY (studentID, courseID, yearOffered, term)
+    PRIMARY KEY (studentID, courseID, yearOffered, term),
     FOREIGN KEY (studentID) REFERENCES Employees(id));
 
 CREATE TABLE InstructorTeaches (
     instructorID INT,
     classID INT,
-    PRIMARY KEY (instructorID)
-    FOREIGN KEY (instructorID) REFERENCES Employees(id)
+    PRIMARY KEY (instructorID),
+    FOREIGN KEY (instructorID) REFERENCES Employees(id),
     FOREIGN KEY (classID) REFERENCES Classes(id)
 );
 
