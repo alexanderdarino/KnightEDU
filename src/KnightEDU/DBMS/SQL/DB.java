@@ -942,19 +942,20 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public KnightEDU.Transcript.Entry addTranscriptEntry(int studentID, KnightEDU.CourseID courseID, int year, Term term, Grade grade, int credits) {
+    public KnightEDU.Transcript.Entry addTranscriptEntry(int studentID, KnightEDU.CourseID courseID, int year, Term term, Grade.Type gradeType, Grade grade, int credits) {
         
         try {
 
 
             PreparedStatement psInsert;
-            psInsert = conn.prepareStatement("insert into Transcript (studentID, courseID, yearOffered, term, grade, credits) values (?,?,?,?,?,?)");
+            psInsert = conn.prepareStatement("insert into Transcript (studentID, courseID, yearOffered, term, gradeType, grade, credits) values (?,?,?,?,?,?,?)");
             psInsert.setInt(1,studentID);
             psInsert.setString(2,courseID.toString());
             psInsert.setInt(3,year);
             psInsert.setInt(4,term.ordinal());
-            psInsert.setString(5,grade.toString());
-            psInsert.setInt(6,credits);
+            psInsert.setInt(5,gradeType.ordinal());
+            psInsert.setString(6,grade.toString());
+            psInsert.setInt(7,credits);
             psInsert.executeUpdate();
         }
         catch (SQLException ex) {
@@ -1010,9 +1011,9 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             myTranscript = s.executeQuery(queryString);
             myTranscript.next();
             
-                KnightEDU.Transcript  thistranstript = null;
-                int studentid1 = myTranscript.getInt("studentID");
-                thistranstript = new KnightEDU.Transcript(studentid1);
+                //KnightEDU.Transcript  thistranstript = null;
+                //int studentid1 = myTranscript.getInt("studentID");
+                //thistranstript = new KnightEDU.Transcript(studentid1);
                 String prefix = myTranscript.getString("courseID").substring(0,3);
                 String number = myTranscript.getString("courseID").substring(3,7);
                 CourseID courseId = CourseID.PNS.create(prefix,number,"");
