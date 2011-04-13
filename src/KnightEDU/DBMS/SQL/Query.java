@@ -22,13 +22,13 @@ public class Query {
      */
     protected static class CourseID implements KnightEDU.DBMS.Query.CourseID
     {
-        protected final KnightEDU.DBMS.Query.Course courseQuery;
+        protected final KnightEDU.DBMS.SQL.Query.Course courseQuery;
 
         /**
          *
          * @param DBMS
          */
-        protected CourseID(KnightEDU.DBMS.Query.Course courseQuery)
+        protected CourseID(KnightEDU.DBMS.SQL.Query.Course courseQuery)
         {
             this.courseQuery = courseQuery;
         }
@@ -51,7 +51,7 @@ public class Query {
              */
             protected String prefixQuery = "", numberQuery = "", suffixQuery = "";
 
-            public PNS(KnightEDU.DBMS.Query.Course courseQuery, int PREFIX_LENGTH, int NUMBER_LENGTH, int SUFFIX_LENGTH)
+            public PNS(KnightEDU.DBMS.SQL.Query.Course courseQuery, int PREFIX_LENGTH, int NUMBER_LENGTH, int SUFFIX_LENGTH)
             {
                 super(courseQuery);
                 this.PREFIX_LENGTH = PREFIX_LENGTH;
@@ -77,10 +77,10 @@ public class Query {
             public KnightEDU.DBMS.SQL.Query.CourseID.PNS containsPrefix(String prefix) throws InvalidPrefixException
             {
                 //if (!DBMS.isValidCoursePrefix(prefix)) throw new InvalidPrefixException();
-                if (!KnightEDU.CourseID.PNS.isValidPrefix(prefix) || prefix.length() != NUMBER_LENGTH) throw new InvalidPrefixException();
+                if (!KnightEDU.CourseID.PNS.isValidPrefix(prefix) || prefix.length() != PREFIX_LENGTH) throw new InvalidPrefixException();
 
                 //prefixQuery = "prefix = " + prefix;
-                prefixQuery = "SUBSTRING(1, 3) = " + prefix;
+                prefixQuery = "SUBSTR(ID, 1, 3) = '" + prefix + "'";
                 return this;
             }
             /**
@@ -91,10 +91,10 @@ public class Query {
              */
             public KnightEDU.DBMS.SQL.Query.CourseID.PNS containsSuffix(String suffix) throws InvalidSuffixException
             {
-                if (!KnightEDU.CourseID.PNS.isValidSuffix(suffix) || suffix.length() != NUMBER_LENGTH) throw new InvalidSuffixException();
+                if (!KnightEDU.CourseID.PNS.isValidSuffix(suffix) || suffix.length() > SUFFIX_LENGTH) throw new InvalidSuffixException();
 
                 //suffixQuery = "suffix = " + suffix;
-                suffixQuery = "SUBSTRING(8, 8) = " + suffix;
+                suffixQuery = "SUBSTR(ID, 8, 8) = '" + suffix + "'";
                 return this;
             }
 
@@ -142,29 +142,29 @@ public class Query {
             {
                 if (!KnightEDU.CourseID.PNS.isValidNumber(number) || number.length() != NUMBER_LENGTH) throw new InvalidNumberException();
 
-                numberQuery = "SUBSTRING(4, 7) " + operation + " " + number;
+                numberQuery = "SUBSTR(ID, 4, 7) " + operation + " '" + number + "'";
                 return this;
             }
 
-            /**
-             *
-             * @return
-             */
+//            /**
+//             *
+//             * @return
+//             */
+//            public KnightEDU.DBMS.Query.Course build()
+//            {
+//                StringBuilder courseIDQueryBuilder = new StringBuilder();
+//                if (!prefixQuery.equals(""))
+//                    courseIDQueryBuilder.append(prefixQuery);
+//                if (!numberQuery.equals(""))
+//                    courseIDQueryBuilder.append(" AND ").append(numberQuery);
+//                if (!suffixQuery.equals(""))
+//                    courseIDQueryBuilder.append(" AND ").append(suffixQuery);
+//
+//                courseQuery.setCourseIDQuery(courseIDQueryBuilder.toString());
+//                return courseQuery;
+//            }
+
             public KnightEDU.DBMS.Query.Course build()
-            {
-                StringBuilder courseIDQueryBuilder = new StringBuilder();
-                if (!prefixQuery.equals(""))
-                    courseIDQueryBuilder.append(prefixQuery);
-                if (!numberQuery.equals(""))
-                    courseIDQueryBuilder.append(" AND ").append(numberQuery);
-                if (!suffixQuery.equals(""))
-                    courseIDQueryBuilder.append(" AND ").append(suffixQuery);
-
-                courseQuery.setCourseIDQuery(courseIDQueryBuilder.toString());
-                return courseQuery;
-            }
-
-            public KnightEDU.DBMS.Query.Course invoke()
             {
 
 //                                ResultSet resultSet = db.query("CourseOfferings", whereClauseBuilder.toString(), "", "");
@@ -186,7 +186,8 @@ public class Query {
                 if (prefixQuery.length() > 0) queryBuilder.append(prefixQuery);
                 if (numberQuery.length() > 0) queryBuilder.append(" AND ").append(numberQuery);
                 if (suffixQuery.length() > 0) queryBuilder.append(" AND ").append(suffixQuery);
-
+                courseQuery.setCourseIDQuery(queryBuilder.toString());
+                return courseQuery;
             }
 //
 //            /**
@@ -359,16 +360,15 @@ public class Query {
          * @return
          */
         public Set<KnightEDU.Course> invoke()
-        {
-            boolean hasPrevious = false;
+        {            
             String whereClause = courseIDQuery;
-            if (hasPrevious) whereClause += " AND ";
-            if (nameQuery != null && !nameQuery.equals(""))
-                whereClause += nameQuery;
 
-            if (hasPrevious) whereClause += " AND ";
+            if (nameQuery != null && !nameQuery.equals(""))
+                whereClause += (whereClause.length() > 0 ? " AND " : "") + nameQuery;
+
+
             if (descriptionQuery != null && !descriptionQuery.equals(""))
-                whereClause +=  descriptionQuery;
+                whereClause +=  (whereClause.length() > 0 ? " AND " : "") + descriptionQuery;
             //return DBMS.queryCourse(whereClause, "", "");
             //return null;
 

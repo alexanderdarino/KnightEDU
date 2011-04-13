@@ -1,7 +1,10 @@
 
 import KnightEDU.Course;
+import KnightEDU.DBMS.Query.CourseID.PNS.InvalidPrefixException;
 import KnightEDU.Term;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * To change this template, choose Tools | Templates
@@ -15,26 +18,19 @@ import java.util.Set;
 public class Main {
     public static void main (String args[])
     {
-        //KnightEDU.DBMS.SQL.DB db = new KnightEDU.DBMS.SQL.DB(3,4,1).queryCourse().descriptionContains(null).nameContains(null).invoke();
-// TEST: Navigate through your course query - keep track of the hierarchy of information!!!
+         //KnightEDU.DBMS.SQL.DB db = new KnightEDU.DBMS.SQL.DB(3,4,1).queryCourse().descriptionContains(null).nameContains(null).invoke();
+        // TEST: Navigate through your course query - keep track of the hierarchy of information!!!
         KnightEDU.DBMS.SQL.DB db = new KnightEDU.DBMS.SQL.DB(3,4,1);
         KnightEDU.DBMS.Query.Course courseQuery = db.queryCourse();
-        courseQuery = courseQuery.descriptionContains("description");
-        Set<Course> courseQuery.invoke();
+        //courseQuery = courseQuery.descriptionContains("description");
+        Set<Course> result = null;
 
-        for (Course.Offering courseOffering : courseOfferings)
-        {
-            Set<Integer> componentIDs = db.queryComponent().getComponentIDs(courseOffering.getPrimaryComponentID());
-            for (Integer componentID : componentIDs)
-            {
-                Set<Integer> classIDs = db.queryComponent().getClassIDs(componentID);
-                for (Integer classID : classIDs)
-                {
-                    KnightEDU.Class myClass = db.getClass(classID);
-                    System.out.println(myClass);
-                }
-            }
-        }
+            result = courseQuery.descriptionContains("preparing").invoke();
+
+
+
+
+
 
 // TEST: Get ALL classes available... passed
 //        KnightEDU.DBMS.SQL.DB db = new KnightEDU.DBMS.SQL.DB(3,4,1);

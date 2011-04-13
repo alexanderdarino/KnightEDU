@@ -45,7 +45,7 @@ public interface Query {
             public Set<KnightEDU.Course.Offering> invoke();
         }
 
-        public Query.CourseID specifyCourseID();
+        public KnightEDU.DBMS.Query.CourseID specifyCourseID();
         public Query.Course nameContains(String name);
         public Query.Course descriptionContains(String description);
         public Set<KnightEDU.Course> invoke();
@@ -60,7 +60,7 @@ public interface Query {
             public PNS containsNumberEqualTo(String number) throws InvalidNumberException;
             public PNS containsNumberLessThan(String number) throws InvalidNumberException;
             public PNS containsNumberGreaterThan(String number) throws InvalidNumberException;
-            public Query.Course invoke();
+            public Query.Course build();
             public static class InvalidPrefixException extends Exception{};
             public static class InvalidSuffixException extends Exception{};
             public static class InvalidNumberException extends Exception{};
