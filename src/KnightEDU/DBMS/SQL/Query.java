@@ -80,7 +80,7 @@ public class Query {
                 if (!KnightEDU.CourseID.PNS.isValidPrefix(prefix) || prefix.length() != PREFIX_LENGTH) throw new InvalidPrefixException();
 
                 //prefixQuery = "prefix = " + prefix;
-                prefixQuery = "SUBSTR(ID, 1, 3) = '" + prefix + "'";
+                prefixQuery = "UPPER(SUBSTR(ID, 1, 3)) = UPPER('" + prefix + "')";
                 return this;
             }
             /**
@@ -94,7 +94,7 @@ public class Query {
                 if (!KnightEDU.CourseID.PNS.isValidSuffix(suffix) || suffix.length() > SUFFIX_LENGTH) throw new InvalidSuffixException();
 
                 //suffixQuery = "suffix = " + suffix;
-                suffixQuery = "SUBSTR(ID, 8, 8) = '" + suffix + "'";
+                suffixQuery = "UPPER(SUBSTR(ID, 8, 8)) = UPPER('" + suffix + "')";
                 return this;
             }
 
@@ -331,7 +331,7 @@ public class Query {
          */
         public Query.Course nameContains(String name)
         {
-            nameQuery = "name LIKE '%" + name + "%'";
+            nameQuery = "LOWER(name) LIKE LOWER('%" + name + "%')";
             return this;
         }
         
@@ -342,7 +342,7 @@ public class Query {
          */
         public Query.Course descriptionContains(String description)
         {
-            descriptionQuery = "description LIKE '%" + description + "%'";
+            descriptionQuery = "LOWER(description) LIKE LOWER('%" + description + "%')";
             return this;
         }
 

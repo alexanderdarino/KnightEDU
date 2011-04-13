@@ -24,8 +24,12 @@ public class Main {
         KnightEDU.DBMS.Query.Course courseQuery = db.queryCourse();
         //courseQuery = courseQuery.descriptionContains("description");
         Set<Course> result = null;
-
-            result = courseQuery.descriptionContains("preparing").invoke();
+        try {
+            result = ((KnightEDU.DBMS.Query.CourseID.PNS) courseQuery.specifyCourseID()).containsPrefix("enc").build().invoke();
+        }
+        catch (InvalidPrefixException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
 
 
