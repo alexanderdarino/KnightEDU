@@ -61,5 +61,9 @@ public interface CourseID {
          * @return
          */
         public boolean isValidCourseSuffix(String s);
+
+        public int getCoursePrefixLength();
+        public int getCourseNumberLength();
+        public int getCourseSuffixMaxLength();
     }
 }

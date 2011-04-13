@@ -1162,4 +1162,19 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
         }
         return null;
     }
+
+    public int getCoursePrefixLength()
+    {
+        return PREFIX_LENGTH;
+    }
+
+    public int getCourseNumberLength()
+    {
+        return NUMBER_LENGTH;
+    }
+
+    public int getCourseSuffixMaxLength()
+    {
+        return SUFFIX_LENGTH;
+    }
 }

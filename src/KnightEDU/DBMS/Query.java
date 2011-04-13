@@ -53,7 +53,7 @@ public interface Query {
 
     public static interface CourseID
     {
-        public static interface PNS
+        public static interface PNS extends CourseID
         {
             public PNS containsPrefix(String prefix) throws InvalidPrefixException;
             public PNS containsSuffix(String suffix) throws InvalidSuffixException;
