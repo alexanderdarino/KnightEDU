@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  *
  * @author Alexander Darino
  */
-public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, KnightEDU.DBMS.Section, KnightEDU.DBMS.Course.Offering, KnightEDU.DBMS.Class, KnightEDU.DBMS.Component, KnightEDU.DBMS.Employee, KnightEDU.DBMS.Transcript.Entry, KnightEDU.DBMS.Instructor
+public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, KnightEDU.DBMS.Section, KnightEDU.DBMS.Course.Offering, KnightEDU.DBMS.Class, KnightEDU.DBMS.Component, KnightEDU.DBMS.Employee, KnightEDU.DBMS.Transcript.Entry, KnightEDU.DBMS.Instructor, KnightEDU.DBMS.Course.Scheduling
 {
     /**
      *
@@ -1106,6 +1106,26 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     }
 
     public KnightEDU.Transcript getTranscript(int studentID) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Course.Scheduling addCourseScheduling(CourseID courseID, int year, Term term) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean containsCourseScheduling(CourseID courseID, int year, Term term) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Course.Scheduling getCourseScheduling(CourseID courseID, int year, Term term) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Query.Course.Scheduling queryCourseScheduling(CourseID courseID, int year, Term term) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void removeCourseScheduling(CourseID courseID, int year, Term term) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -117,4 +117,12 @@ public interface Course {
          */
         public KnightEDU.DBMS.Query.Course.Offering queryCourseOffering();
     }
+    public static interface Scheduling
+    {
+        public KnightEDU.Course.Scheduling addCourseScheduling(CourseID courseID, int year, KnightEDU.Term term);
+        public boolean containsCourseScheduling (CourseID courseID, int year, KnightEDU.Term term);
+        public KnightEDU.Course.Scheduling getCourseScheduling(CourseID courseID, int year, KnightEDU.Term term);
+        public Query.Course.Scheduling queryCourseScheduling(CourseID courseID, int year, KnightEDU.Term term);
+        public void removeCourseScheduling (CourseID courseID, int year, KnightEDU.Term term);
+    }
 }

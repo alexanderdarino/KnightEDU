@@ -264,6 +264,12 @@ public class Query {
 
             
         }
+
+        public static class Scheduling {
+
+            public Scheduling() {
+            }
+        }
         /**
          *
          */
