@@ -16,8 +16,8 @@ public enum YearParity {
      * Odd years
      */
     ODD,
-    /**
-     * Both even and odd years
-     */
-    BOTH;
+//    /**
+//     * Both even and odd years
+//     */
+//    BOTH;
 }

@@ -1,11 +1,17 @@
 CREATE TABLE Courses (
     id  CHAR(8),
     name CHAR(254),
-    description VARCHAR(1000),
+    description VARCHAR(10000),
     creditsMin INT,
     creditsMax INT,
     prerequisites VARCHAR(1000),
     PRIMARY KEY (id));
+
+CREATE TABLE CourseSchedules(
+	courseID CHAR(8),
+	term INT,
+	yearParity INT,
+	PRIMARY KEY (courseID, term, yearParity));
 
 CREATE TABLE Components(
     id INT,
@@ -65,7 +71,7 @@ CREATE TABLE Employees (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE Transcript (
+CREATE TABLE Transcripts (
     studentID INT,
     courseID CHAR(8),
     yearOffered INT,
@@ -75,6 +81,3 @@ CREATE TABLE Transcript (
     credits INT,
     PRIMARY KEY (studentID, courseID, yearOffered, term),
     FOREIGN KEY (studentID) REFERENCES Employees(id));
-);
-
-

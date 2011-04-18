@@ -1,0 +1,22 @@
+Setting up universityDB
+Prerequisites: JavaDB is installed. The JavaDB bin folder is in your PATH variable.
+
+1. Start the "ij" program from the command line
+2. Connect to the Database
+ - If the Database does not exist: Create and connect to it with "   connect 'jdbc:derby:C:\\universityDB;create=true';   "
+ - If the Database already exists: Connect to it with "   connect 'jdbc:derby:C:\\universityDB';   "
+3. Copy all the supplied .sql scripts into the C:\universityDB folder
+4. Execute the following commands in order:
+run 'C:\\universityDB\\SQL DB Tables.sql';
+run 'C:\\universityDB\\Add Sections.sql';
+run 'C:\\universityDB\\Add Courses and Course Schedules.sql';
+run 'C:\\universityDB\\Add Employees.sql';
+run 'C:\\universityDB\\Add Classes.sql';
+run 'C:\\universityDB\\Add Components.sql';
+run 'C:\\universityDB\\Add ComponentClasses.sql';
+run 'C:\\universityDB\\Add ComponentGroups.sql';
+run 'C:\\universityDB\\Add Course Offerings.sql';
+run 'C:\\universityDB\\Add Transcript Entries.sql';
+5. Exit the ij program with the "     exit;     " command.
+
+NOTE: If you wish to prepopulate the database with additional information, feel free to use the Table insertation entries in the supplied .sql scripts as templates for additional entries.

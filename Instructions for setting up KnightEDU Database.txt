@@ -1,0 +1,37 @@
+Instructions for setting up KnightEDU Database
+1.	Download and install the latest version of JavaDB from http://www.oracle.com/technetwork/java/javadb/downloads/index.html. Note: JavaDB is also known as "Apache Derby"
+2.	Add JavaDB to your PATH Variable. For Windows:
+	1.	Control Panel> System>Advanced System Settings> Advanced Tab> Envirionment Variables
+	2.	Under System Variables, select "PATH"
+	3.	Click "Edit"
+	4.	Append the following to the end of your PATH variable: ";<JAVADB INSTALLATION DIRECTORY>\bin" (Do NOT forget the semicolon in the beginning!!!)
+3.	Pull the latest version of KnightEDU from the git repository
+4.	Create the KnightEDU Database
+	1.	Open the windows command prompt
+	2.	Type "ij". This is the program used to directly administer SQL databases using Apache Derby
+	3.	Type "     connect 'jdbc:derby:C:\\universityDB;create=true';     " (do not forget the semicolon at the end)
+	4.	Copy all of the .sql scripts from the KnightEDU package into C:\universityDB
+	5.	In the ij program, type "     run ‘SQL DB Tables.sql’    "
+	6.	(Optional) Populate the KnightEDU database with sample data:
+		1.	 run 'C:\\universityDB\\SQL DB Tables.sql';
+		2.	 run 'C:\\universityDB\\Add Sections.sql';
+		3.	 run 'C:\\universityDB\\Add Courses and Course Schedules.sql';
+		4.	 run 'C:\\universityDB\\Add Employees.sql';
+		5.	 run 'C:\\universityDB\\Add Classes.sql';
+		6.	 run 'C:\\universityDB\\Add Components.sql';
+		7.	 run 'C:\\universityDB\\Add ComponentClasses.sql';
+		8.	 run 'C:\\universityDB\\Add ComponentGroups.sql';
+		9.	 run 'C:\\universityDB\\Add Course Offerings.sql';
+		10.	run 'C:\\universityDB\\Add Transcript Entries.sql';
+	7.	Type "     exit;     "
+	8.	Close the command prompt
+5.	Add JavaDB Libraries to NetBeans project
+	1.	Open project in NetBeans
+	2.	In the Projects window, right-click the project and select properties
+	3.	Under categories, select "Libraries"
+	4.	Click "Add JAR/Folder"
+	5.	In the "Add JAR/Folder" dialog box, navigate to the JavaDB installation directory and add the following files:
+		A.	lib\derby.jar
+		B.	lib\derbyclient.jar
+6.	Click "Open"
+7.	Click "OK"

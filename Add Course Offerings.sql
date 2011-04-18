@@ -1,6 +1,12 @@
 INSERT INTO CourseOfferings(courseID, term, yearOffered, primaryComponentID)
-	VALUES('BSC2010', 0, 2011, 0);
+	VALUES('ENC1101', 1, 2011, 1);
 INSERT INTO CourseOfferings(courseID, term, yearOffered, primaryComponentID)
-	VALUES('COP1234', 0, 2011,3);
+	VALUES('ENC1102', 1, 2011, 2);
+/*
 INSERT INTO CourseOfferings(courseID, term, yearOffered, primaryComponentID)
-	VALUES('COP3223', 0, 2011,4);
+	VALUES('SPC1608', 1, 2011, 3);
+INSERT INTO CourseOfferings(courseID, term, yearOffered, primaryComponentID)
+	VALUES('SPC1603', 1, 2011, 4);
+INSERT INTO CourseOfferings(courseID, term, yearOffered, primaryComponentID)
+	VALUES('COM1000', 1, 2011, 5);
+*/

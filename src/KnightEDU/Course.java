@@ -3,6 +3,8 @@ package KnightEDU;
 import KnightEDU.Grade.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -18,6 +20,18 @@ import java.util.TreeSet;
  */
 public class Course
 {
+
+    protected TreeSet<Schedule> schedules;
+
+    /**
+     * Get the value of schedules
+     *
+     * @return the value of schedules
+     */
+    public Set<Schedule> getSchedules()
+    {
+        return Collections.unmodifiableSet(schedules);
+    }
 
     /**
      * The identifier of the described course
@@ -106,10 +120,6 @@ public class Course
     {
         this.prerequisites = prerequisites;
     }
-    /**
-     * Set of terms when course is regularly scheduled
-     */
-    protected TreeSet<Offering> offeredTerms = new TreeSet();
 
     /**
      * Returns the quantity of credits offered by the course.
@@ -147,21 +157,26 @@ public class Course
         return name;
     }
 
-    /**
-     * Constructs a new course object.
-     * @param id course identifier
-     * @param name course name
-     * @param description course description
-    @param credits Credits object representing quantity of credits offered
-    @param gradeType
-     */
-    protected Course(CourseID id, String name, String description, Credits credits, Grade.Type gradeType)
+    protected Course(CourseID id, String name, String description, Credits credits, Type gradeType, Prerequisites prerequisites, Set<Schedule> schedules)
     {
+        this.schedules = new TreeSet(
+            new Comparator<Course.Schedule>()
+            {
+
+                public int compare(Schedule o1, Schedule o2)
+                {
+                    int compareTo = o1.getTerm().compareTo(o2.getTerm());
+                    if (compareTo != 0) return compareTo;
+                    return o1.getYearPairity().compareTo(o2.getYearPairity());
+                }
+            });
+        this.schedules.addAll(schedules);
         this.id = id;
-        this.name = name;
-        this.description = description;
-        this.credits = credits;
         this.gradeType = gradeType;
+        this.name = name.trim();
+        this.description = description.trim();
+        this.credits = credits;
+        this.prerequisites = prerequisites;
     }
 
     /**
@@ -174,141 +189,62 @@ public class Course
     @return a new course object. If name, credits, or gradeType are <code>null</code>
     then returns <code>null</code>.
      */
-    public static Course create(CourseID id, String name, String description, Credits credits, Grade.Type gradeType)
+    public static Course create(CourseID id, String name, String description, Credits credits, Grade.Type gradeType, Prerequisites prerequisites, Set<Schedule> schedules)
     {
-        if (id == null || name == null || description == null || credits == null || gradeType == null) {
+        if (id == null || name == null || description == null || credits == null || gradeType == null || schedules == null || schedules.isEmpty()) {
             return null;
         }
-        return new Course(id, name, description, credits, gradeType);
+        return new Course(id, name, description, credits, gradeType, prerequisites, schedules);
     }
 
-//    /**
-//     * Sets a course offering for the specified term with the specified year parity.
-//     * @param term term of course offering
-//     * @param parity year parity of course offering
-//     * @return this course
-//     */
-//    public boolean addOffering(Term term, YearParity parity)
-//    {
-//        if (isOffered(term) != null) {
-//            return false;
-//        }
-//        offeredTerms.add(new Offering(id, term, parity));
-//        return true;
-//    }
-//
-//    /**
-//
-//    @param term
-//    @return
-//     */
-//    public Offering isOffered(Term term)
-//    {
-//        for (Offering i : offeredTerms) {
-//            if (i.getTerm() == term) {
-//                return i;
-//            }
-//        }
-//
-//        return null;
-//    }
+    private String scheduleString()
+    {
+        if (schedules.isEmpty()) return "N/A";
+        StringBuilder builder = new StringBuilder();
+        Term lastTerm = schedules.first().getTerm();
+        Term currentTerm = schedules.first().getTerm();
+        TreeSet<YearParity> yearParities = new TreeSet();
+        for (Schedule schedule : schedules)
+        {
+            if (schedule.getTerm() == currentTerm)
+            {
+                yearParities.add(schedule.getYearPairity());
+            }
+            else
+            {
+                builder.append(currentTerm);
+                if (!(yearParities.contains(YearParity.EVEN) && yearParities.contains(YearParity.ODD)))
+                {
+                    builder.append(" ");
+                    for (YearParity i : yearParities)
+                    {
+                        builder.append(i).append("/");
+                    }
+                    builder.deleteCharAt(builder.length()-1);
+                }
 
-//    /**
-//     * Removes a course offering for the specified term
-//     * @param term term of course offering
-//     * @return <ul>
-//        <li><code>true</code> if term was successfully removed</li>
-//        <li><code>false</code> if no such term exists</li></ul>
-//     */
-//    public boolean removeOffering(Term term)
-//    {
-//        Offering offering = isOffered(term);
-//        if (offering == null) {
-//            return false;
-//        }
-//
-//        offeredTerms.remove(offering);
-//        return true;
-//    }
+                lastTerm = currentTerm;
+                currentTerm = schedule.getTerm();
+                yearParities = new TreeSet();
+                yearParities.add(schedule.getYearPairity());
+                builder.append(" ");
+            }
+        }
+        
+        builder.append(currentTerm);
 
+        if (!(yearParities.contains(YearParity.EVEN) && yearParities.contains(YearParity.ODD)))
+        {
+            for (YearParity i : yearParities)
+            {
+                builder.append(i).append("/");
+            }
+            builder.deleteCharAt(builder.length()-1);
+        }
 
-//    ////////////////////////////////////////////////////////////////Register an "Update Event" System
-//    /**
-//     * Returns the set of course offerings
-//     * @return set of course offerings
-//     */
-//    public Set<Offering> getOfferings()
-//    {
-//        //return (Set<Offering>) offeredTerms.clone();
-//        return Collections.unmodifiableSet(offeredTerms);
-//    }
+        return builder.toString();
+    }
 
-//    /**
-//     * Represents a course offering. Courses are offered for a specified term
-//     * with a specified year parity.
-//     @author Alexander Darino
-//     */
-//    public static class Offering implements Comparable<Offering>
-//    {
-//
-//        /**
-//
-//         */
-//        protected final CourseID courseID;
-//        /**
-//         * The term the course is offered in
-//         */
-//        protected final Term term;
-//        /**
-//         * The year parity the course is offered in
-//         */
-//        protected final YearParity parity;
-//
-//        /**
-//         * Creates a new course offering
-//         @param courseID
-//         @param term term offered
-//         * @param parity parity of year offered
-//         */
-//        public Offering(CourseID courseID, Term term, YearParity parity)
-//        {
-//            this.courseID = courseID;
-//            this.term = term;
-//            this.parity = parity;
-//        }
-//
-//        /**
-//
-//         @return
-//         */
-//        public CourseID getCourseID()
-//        {
-//            return courseID;
-//        }
-//
-//        /**
-//         * Returns the parity of the offered year
-//         * @return parity of offered year
-//         */
-//        public YearParity getParity()
-//        {
-//            return parity;
-//        }
-//
-//        /**
-//         * Returns the term of the course offering
-//         * @return term of offering
-//         */
-//        public Term getTerm()
-//        {
-//            return term;
-//        }
-//
-//        public int compareTo(Offering o)
-//        {
-//            throw new UnsupportedOperationException("Not yet implemented");
-//        }
-//    }
 
     public static class Scheduling
     {
@@ -357,14 +293,6 @@ public class Course
             this.primaryComponentID = primaryComponentID;
         }
 
-//        /**
-//
-//         @return
-//         */
-//        public int componentsTotal()
-//        {
-//            return componentIDs.size();
-//        }
         /**
          * The course this class covers
          */
@@ -378,11 +306,6 @@ public class Course
          */
         protected int year;
 
-
-//        /**
-//
-//         */
-//        protected ArrayList<Integer> componentIDs = new ArrayList();
 
         /**
 
@@ -411,14 +334,6 @@ public class Course
             return courseID;
         }
 
-//        /**
-//
-//         @return
-//         */
-//        public ArrayList<Integer> getComponentIDs()
-//        {
-//            return (ArrayList<Integer>) Collections.unmodifiableList(componentIDs);
-//        }
 
         public int getPrimaryComponentID()
         {
@@ -432,33 +347,35 @@ public class Course
 
         }
 
-//        /**
-//
-//         @param componentGroupID
-//         */
-//        public void addComponent(int componentGroupID)
-//        {
-//            if (!componentIDs.contains(componentGroupID))
-//                componentIDs.add(componentGroupID);
-//        }
+    }
 
-//        /**
-//
-//         @param componentGroupID
-//         */
-//        public void removeComponent(int componentGroupID)
-//        {
-//            componentIDs.remove(componentGroupID);
-//        }
-//
-//        /**
-//
-//         @param componentGroupID
-//         @return
-//         */
-//        public boolean containsComponent(int componentGroupID)
-//        {
-//            return componentIDs.contains(componentGroupID);
-//        }
+    @Override
+    public String toString()
+    {
+        return getName() + "(Description: " + getDescription() + ", " + "Credits: " + getCredits() + ", Grade Type: " + getGradeType() + ", Prerequisites: " + getPrerequisites() + ", Offered: " + scheduleString() + ")";
+
+    }
+
+    public static class Schedule
+    {
+        protected Term term;
+        protected YearParity yearPairity;
+
+        public Schedule(Term term, YearParity yearPairity)
+        {
+            this.term = term;
+            this.yearPairity = yearPairity;
+        }
+
+        public Term getTerm()
+        {
+            return term;
+        }
+
+        public YearParity getYearPairity()
+        {
+            return yearPairity;
+        }
+
     }
 }
