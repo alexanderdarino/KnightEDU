@@ -122,8 +122,8 @@ public interface Course {
     {
         public KnightEDU.Course.Schedule addCourseSchedule(CourseID courseID, YearParity yearParity, KnightEDU.Term term);
         public boolean containsCourseSchedule (CourseID courseID, YearParity yearParity, KnightEDU.Term term);
-        public KnightEDU.Course.Schedule getCourseSchedule(CourseID courseID, YearParity yearParity, KnightEDU.Term term);
+        public Set<KnightEDU.Course.Schedule> getCourseSchedules(CourseID courseID);
         public Query.Course.Schedule queryCourseSchedule(CourseID courseID, YearParity yearParity, KnightEDU.Term term);
-        public void removeCourseSchedule (CourseID courseID, int year, KnightEDU.Term term);
+        public void removeCourseSchedule (CourseID courseID, YearParity yearParity, KnightEDU.Term term);
     }
 }

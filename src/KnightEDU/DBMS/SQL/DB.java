@@ -204,19 +204,6 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    protected Set<Course.Schedule> getCourseSchedules(CourseID courseID) throws SQLException
-    {
-        Set<Course.Schedule> r_val = new HashSet();
-        Statement s = conn.createStatement();
-        String queryString = "SELECT * FROM CourseSchedules CS WHERE CS.COURSEID='" + courseID.toString() + "'";
-        ResultSet schedules = s.executeQuery(queryString);
-        while (schedules.next())
-        {
-            r_val.add(new Course.Schedule(Term.values()[schedules.getInt("term")], YearParity.values()[schedules.getInt("yearParity")]));
-        }
-        return r_val;
-    }
-
     public void updateCourse(Course course)
     {
         try {
@@ -1196,45 +1183,56 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     }
 
     public boolean containsCourseSchedule(CourseID courseID, YearParity yearParity, Term term) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public Course.Schedule getCourseSchedule(CourseID courseID, YearParity yearParity, Term term) {
         try {
             Statement s;
-            ResultSet myClass;
+            ResultSet results;
             s = conn.createStatement();
-            String queryString = "select * from courseschedules cs WHERE C.ID = ";
-            String classid = Integer.toString(classID);
-            queryString = queryString + classid;
-            //queryString = queryString + " AND C.SECTIONID = ";
-            //queryString = queryString + sectionID;
-            myClass = s.executeQuery(queryString);
-            while (myClass.next())
-            {
-                int secID = myClass.getInt("sectionID");
-                int secNumber = myClass.getInt("sectionNum");
-                int instructorID = myClass.getInt("instructorID");
-                KnightEDU.Class myclass = new KnightEDU.Class(classID, secID, secNumber, 100, instructorID);
+            String queryString = "select * from courseschedules cs WHERE cs.courseID = '" + courseID.toString() + "' AND cs.yearParity = " + yearParity.ordinal() + " AND cs.term = " + term.ordinal();
+            results = s.executeQuery(queryString);
+            return results.next();
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 
-                return myclass;
-                //TODO
+    public Set<KnightEDU.Course.Schedule> getCourseSchedules(CourseID courseID) {
+        try {
+            Statement s;
+            ResultSet results;
+            s = conn.createStatement();
+            String queryString = "select * from courseschedules cs WHERE cs.courseID = '" + courseID.toString() + "'";
+            results = s.executeQuery(queryString);
+            Set<KnightEDU.Course.Schedule> r_val = new HashSet();
+            while (results.next())
+            {
+                YearParity resultYearParity = YearParity.values()[results.getInt("yearParity")];
+                Term resultTerm = Term.values()[results.getInt("term")];
+                r_val.add(new KnightEDU.Course.Schedule(resultTerm, resultYearParity));
             }
-            return null;
+            return r_val;
         }
         catch (SQLException ex) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
-        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public Query.Course.Schedule queryCourseSchedule(CourseID courseID, YearParity yearParity, Term term) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void removeCourseSchedule(CourseID courseID, int year, Term term) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void removeCourseSchedule(CourseID courseID, YearParity yearParity, Term term) {
+        try {
+            Statement s;
+            s = conn.createStatement();
+            String queryString = "DELETE from courseschedules cs WHERE cs.courseID = '" + courseID.toString() + "' AND cs.yearParity = " + yearParity.ordinal() + " AND cs.term = " + term.ordinal();
+            s.executeUpdate(queryString);
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

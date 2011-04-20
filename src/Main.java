@@ -1,7 +1,4 @@
-
-import KnightEDU.Course;
-import KnightEDU.DBMS.Query.CourseID.PNS.InvalidPrefixException;
-import KnightEDU.Term;
+import KnightEDU.*;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,19 +15,26 @@ import java.util.logging.Logger;
 public class Main {
     public static void main (String args[])
     {
-         //KnightEDU.DBMS.SQL.DB db = new KnightEDU.DBMS.SQL.DB(3,4,1).queryCourse().descriptionContains(null).nameContains(null).invoke();
-        // TEST: Navigate through your course query - keep track of the hierarchy of information!!!
-        KnightEDU.DBMS.SQL.DB db = new KnightEDU.DBMS.SQL.DB(3,4,1);
-        KnightEDU.DBMS.Query.Course courseQuery = db.queryCourse();
-        //courseQuery = courseQuery.descriptionContains("description");
-        Set<Course> result = null;
-        try {
-            result = ((KnightEDU.DBMS.Query.CourseID.PNS) courseQuery.specifyCourseID()).containsPrefix("enc").build().invoke();
-        }
-        catch (InvalidPrefixException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//KnightEDU.DBMS.SQL.DB db = new KnightEDU.DBMS.SQL.DB(3,4,1).queryCourse().descriptionContains(null).nameContains(null).invoke();
+// TEST: Navigate through your course query - keep track of the hierarchy of information!!!
+//        KnightEDU.DBMS.SQL.DB db = new KnightEDU.DBMS.SQL.DB(3,4,1);
+//        KnightEDU.DBMS.Query.Course courseQuery = db.queryCourse();
+//        //courseQuery = courseQuery.descriptionContains("description");
+//        Set<Course> result = null;
+//        try {
+//            result = ((KnightEDU.DBMS.Query.CourseID.PNS) courseQuery.specifyCourseID()).containsPrefix("enc").build().invoke();
+//        }
+//        catch (InvalidPrefixException ex) {
+//            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
+
+// TEST: CourseSchedule methods
+//        KnightEDU.DBMS.SQL.DB db = new KnightEDU.DBMS.SQL.DB(3,4,1);
+// PASSED:        db.addCourseSchedule(new CourseID("ABC1234"), YearParity.EVEN, Term.FALL);
+// PASSED:        db.containsCourseSchedule(new CourseID("ABC1234"), YearParity.EVEN, Term.FALL);
+// PASSED:        db.getCourseSchedules(new CourseID("ABC1234"));
+// PASSED:        db.removeCourseSchedule(new CourseID("ABC1234"), YearParity.EVEN, Term.FALL);
 
 
 
