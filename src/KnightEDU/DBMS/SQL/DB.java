@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  *
  * @author Alexander Darino
  */
-public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, KnightEDU.DBMS.Section, KnightEDU.DBMS.Course.Offering, KnightEDU.DBMS.Class, KnightEDU.DBMS.Component, KnightEDU.DBMS.Employee, KnightEDU.DBMS.Transcript.Entry, KnightEDU.DBMS.Instructor, KnightEDU.DBMS.Course.Scheduling
+public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, KnightEDU.DBMS.Section, KnightEDU.DBMS.Course.Offering, KnightEDU.DBMS.Class, KnightEDU.DBMS.Component, KnightEDU.DBMS.Employee, KnightEDU.DBMS.Transcript.Entry, KnightEDU.DBMS.Instructor, KnightEDU.DBMS.Course.Schedule
 {
     /**
      *
@@ -1178,23 +1178,63 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
         return SUFFIX_LENGTH;
     }
 
-    public Course.Scheduling addCourseScheduling(CourseID courseID, int year, Term term) {
+    public Course.Schedule addCourseSchedule(CourseID courseID, YearParity yearParity, Term term) {
+        Course.Schedule r_val = null;
+        try {
+            PreparedStatement psInsert;
+            psInsert = conn.prepareStatement("insert into CourseSchedules(courseid, term, yearparity) values (?,?,?) ");
+            psInsert.setString(1,courseID.toString());
+            psInsert.setInt(2,yearParity.ordinal());
+            psInsert.setInt(3,term.ordinal());
+            psInsert.executeUpdate();
+            r_val = new Course.Schedule(term, yearParity);
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return r_val;
+    }
+
+    public boolean containsCourseSchedule(CourseID courseID, YearParity yearParity, Term term) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public boolean containsCourseScheduling(CourseID courseID, int year, Term term) {
+    public Course.Schedule getCourseSchedule(CourseID courseID, YearParity yearParity, Term term) {
+        try {
+            Statement s;
+            ResultSet myClass;
+            s = conn.createStatement();
+            String queryString = "select * from courseschedules cs WHERE C.ID = ";
+            String classid = Integer.toString(classID);
+            queryString = queryString + classid;
+            //queryString = queryString + " AND C.SECTIONID = ";
+            //queryString = queryString + sectionID;
+            myClass = s.executeQuery(queryString);
+            while (myClass.next())
+            {
+                int secID = myClass.getInt("sectionID");
+                int secNumber = myClass.getInt("sectionNum");
+                int instructorID = myClass.getInt("instructorID");
+                KnightEDU.Class myclass = new KnightEDU.Class(classID, secID, secNumber, 100, instructorID);
+
+                return myclass;
+                //TODO
+            }
+            return null;
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Query.Course.Schedule queryCourseSchedule(CourseID courseID, YearParity yearParity, Term term) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Course.Scheduling getCourseScheduling(CourseID courseID, int year, Term term) {
+    public void removeCourseSchedule(CourseID courseID, int year, Term term) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Query.Course.Scheduling queryCourseScheduling(CourseID courseID, int year, Term term) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void removeCourseScheduling(CourseID courseID, int year, Term term) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

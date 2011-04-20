@@ -297,6 +297,13 @@ public class Query {
             public Scheduling() {
             }
         }
+
+        public static class Schedule {
+
+            public Schedule() {
+            }
+        }
+
         /**
          *
          */

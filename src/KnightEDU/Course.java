@@ -245,33 +245,6 @@ public class Course
         return builder.toString();
     }
 
-
-    public static class Scheduling
-    {
-        protected CourseID courseID;
-        protected int year;
-        protected Term term;
-
-        public Scheduling(CourseID courseID, int year, Term term) {
-            this.courseID = courseID;
-            this.year = year;
-            this.term = term;
-        }
-
-        public CourseID getCourseID() {
-            return courseID;
-        }
-
-        public Term getTerm() {
-            return term;
-        }
-
-        public int getYear() {
-            return year;
-        }
-
-    }
-
     /**
 
      */

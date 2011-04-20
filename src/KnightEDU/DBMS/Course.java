@@ -5,6 +5,7 @@ import KnightEDU.DBMS.SQL.Query;
 import KnightEDU.Credits;
 import KnightEDU.Grade;
 import KnightEDU.Term;
+import KnightEDU.YearParity;
 import java.util.Set;
 
 /**
@@ -117,12 +118,12 @@ public interface Course {
          */
         public KnightEDU.DBMS.Query.Course.Offering queryCourseOffering();
     }
-    public static interface Scheduling
+    public static interface Schedule
     {
-        public KnightEDU.Course.Scheduling addCourseScheduling(CourseID courseID, int year, KnightEDU.Term term);
-        public boolean containsCourseScheduling (CourseID courseID, int year, KnightEDU.Term term);
-        public KnightEDU.Course.Scheduling getCourseScheduling(CourseID courseID, int year, KnightEDU.Term term);
-        public Query.Course.Scheduling queryCourseScheduling(CourseID courseID, int year, KnightEDU.Term term);
-        public void removeCourseScheduling (CourseID courseID, int year, KnightEDU.Term term);
+        public KnightEDU.Course.Schedule addCourseSchedule(CourseID courseID, YearParity yearParity, KnightEDU.Term term);
+        public boolean containsCourseSchedule (CourseID courseID, YearParity yearParity, KnightEDU.Term term);
+        public KnightEDU.Course.Schedule getCourseSchedule(CourseID courseID, YearParity yearParity, KnightEDU.Term term);
+        public Query.Course.Schedule queryCourseSchedule(CourseID courseID, YearParity yearParity, KnightEDU.Term term);
+        public void removeCourseSchedule (CourseID courseID, int year, KnightEDU.Term term);
     }
 }
