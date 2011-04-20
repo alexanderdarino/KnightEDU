@@ -13,38 +13,38 @@ public class Component
      */
     protected final int componentID;
 
-    /**
+//    /**
+//
+//     @param classObj
+//     @return
+//     */
+//    public boolean addClass(Class classObj)
+//    {
+//        return components.add(classObj);
+//    }
 
-     @param classObj
-     @return
-     */
-    public boolean addClass(Class classObj)
-    {
-        return components.add(classObj);
-    }
+//    /**
+//
+//     @param classID
+//     @return
+//     */
+//    public boolean removeClass(int classID)
+//    {
+//        Class toRemove = getClass(classID);
+//        if (toRemove == null) return false;
+//        return components.remove(toRemove);
+//    }
 
-    /**
-
-     @param classID
-     @return
-     */
-    public boolean removeClass(int classID)
-    {
-        Class toRemove = getClass(classID);
-        if (toRemove == null) return false;
-        return components.remove(toRemove);
-    }
-
-    /**
-
-     @param classID
-     @return
-     */
-    public boolean containsClass(int classID)
-    {
-        Class r_val = getClass(classID);
-        return r_val != null ? true : false;
-    }
+//    /**
+//
+//     @param classID
+//     @return
+//     */
+//    public boolean containsClass(int classID)
+//    {
+//        Class r_val = getClass(classID);
+//        return r_val != null ? true : false;
+//    }
 
     /**
 

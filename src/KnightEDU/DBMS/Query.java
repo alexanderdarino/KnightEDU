@@ -29,7 +29,6 @@ public interface Query {
 
     public static interface Class
     {
-       
     }
     /**
      *

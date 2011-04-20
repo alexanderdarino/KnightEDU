@@ -36,6 +36,10 @@ public class Main {
 // PASSED:        db.getCourseSchedules(new CourseID("ABC1234"));
 // PASSED:        db.removeCourseSchedule(new CourseID("ABC1234"), YearParity.EVEN, Term.FALL);
 
+// TEST: getClass() method
+        KnightEDU.DBMS.SQL.DB db = new KnightEDU.DBMS.SQL.DB(3,4,1);
+        db.getClass(new CourseID("ENC1101"), 2011, Term.SPRING, 1);
+
 
 
 

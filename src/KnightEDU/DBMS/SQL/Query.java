@@ -435,23 +435,6 @@ public class Query {
     /**
      *
      */
-    public static class Class implements KnightEDU.DBMS.Query.Class
-    {
-        KnightEDU.DBMS.SQL.DB db;
-        /**
-         *
-         */
-        public Class(KnightEDU.DBMS.SQL.DB db)
-        {
-            this.db = db;
-        }
-
-        
-    }
-
-    /**
-     *
-     */
     public static class Component implements KnightEDU.DBMS.Query.Component
     {
         protected final KnightEDU.DBMS.SQL.DB db;

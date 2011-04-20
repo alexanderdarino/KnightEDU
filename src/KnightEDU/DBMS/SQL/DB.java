@@ -354,8 +354,8 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     public Query.Section querySection()
     {
         //query("Section", whereClause, groupByClause, havingClause);
-        //throw new UnsupportedOperationException("Not supported yet.");
-        return null;
+        throw new UnsupportedOperationException("Not supported yet.");
+        //return null;
     }
 
     public boolean containsSection(String sectionID)
@@ -440,30 +440,22 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             Statement s;
             ResultSet myCourseOffering;
             s = conn.createStatement();
-            String queryString = "select * from CourseOffered C WHERE C.COURSEID = '";
-            queryString = queryString + courseID + "'";
-            queryString = queryString + " AND C.TERM = '";
-            queryString = queryString + term.toString() + "'";
+            String queryString = "select * from CourseOfferings C WHERE C.COURSEID = '";
+            queryString = queryString + courseID.toString() + "'";
+            queryString = queryString + " AND C.TERM = ";
+            queryString = queryString + term.ordinal();
             queryString = queryString + " AND C.yearOffered = ";
             String newyear = Integer.toString(year);
             queryString = queryString + newyear.toString();
             myCourseOffering = s.executeQuery(queryString);
             while (myCourseOffering.next())
             {
-                String prefix = myCourseOffering.getString("COURSEID").substring(0,3);
-                String number = myCourseOffering.getString("COURSEID").substring(3,7);
-                CourseID courseId = CourseID.PNS.create(prefix,number,"");
-                String thisterm = myCourseOffering.getString("TERM");
+                CourseID thiscourseID = new KnightEDU.CourseID(myCourseOffering.getString("courseID"));
+                int thisterm = myCourseOffering.getInt("TERM");
                 int thisyear = myCourseOffering.getInt("yearOffered");
-                KnightEDU.Course.Offering newOffering = null;
-                if (thisterm.equals("FALL"))
-                    newOffering = new KnightEDU.Course.Offering(courseId, thisyear, KnightEDU.Term.FALL, 1);
-                else if (thisterm.equals("SPRING"))
-                    newOffering = new KnightEDU.Course.Offering(courseId, thisyear, KnightEDU.Term.SPRING, 1);
-                else if (thisterm.equals("SUMMER"))
-                    newOffering = new KnightEDU.Course.Offering(courseId, thisyear, KnightEDU.Term.SUMMER, 1);
-                else if (thisterm.equals("OCCASIONAL"))
-                    newOffering = new KnightEDU.Course.Offering(courseId, thisyear, KnightEDU.Term.OCCASIONAL, 1);
+                int primaryComponentID = myCourseOffering.getInt("primaryComponentID");
+                KnightEDU.Course.Offering newOffering = new KnightEDU.Course.Offering(thiscourseID, thisyear, KnightEDU.Term.values()[thisterm], primaryComponentID);
+
                 return newOffering;
             }
             
@@ -601,8 +593,26 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     public KnightEDU.DBMS.Query.Class queryClass()
     {
         //query("ComponentOffering", whereClause, groupByClause, havingClause);
-        //throw new UnsupportedOperationException("Not supported yet.");
-         return null;
+        throw new UnsupportedOperationException("Not supported yet.");
+         //return null;
+        //return new Query.Class(this);
+    }
+
+    public KnightEDU.Class getClass(KnightEDU.CourseID courseID, int year, KnightEDU.Term term, int sectionNum)
+    {
+        KnightEDU.Course.Offering offering = getCourseOffering(courseID.toString(), term, year);
+        Set<Integer> componentIDs = queryComponent().getComponentIDs(offering.getPrimaryComponentID());
+        for (int i : componentIDs)
+        {
+            Set<Integer> classIDs = getComponentClassIDs(i);
+            for (int j : classIDs)
+            {
+                KnightEDU.Class classObj = getClass(j);
+                if (classObj.getSectionNumber() == sectionNum)
+                    return classObj;
+            }
+        }
+        return null;
     }
 
     public void removeClass(int classID)
@@ -1233,6 +1243,27 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
         catch (SQLException ex) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public Set<Integer> getComponentClassIDs(int i)
+    {
+        try {
+            Statement s;
+            ResultSet results;
+            s = conn.createStatement();
+            String queryString = "SELECT classID from ComponentClasses CC WHERE CC.componentID = " + i;
+            results = s.executeQuery(queryString);
+            Set<Integer> r_val = new HashSet();
+            while (results.next())
+            {
+                r_val.add(results.getInt("classID"));
+            }
+            return r_val;
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
 }
