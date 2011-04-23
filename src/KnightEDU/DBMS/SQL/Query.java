@@ -1,6 +1,5 @@
 package KnightEDU.DBMS.SQL;
 
-import KnightEDU.DBMS.SQL.Query.CourseID.PNS;
 import KnightEDU.Grade.Type;
 import KnightEDU.Prerequisites;
 import KnightEDU.Term;

@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  *
  * @author Alexander Darino
  */
-public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, KnightEDU.DBMS.Section, KnightEDU.DBMS.Course.Offering, KnightEDU.DBMS.Class, KnightEDU.DBMS.Component, KnightEDU.DBMS.Employee, KnightEDU.DBMS.Transcript.Entry, KnightEDU.DBMS.Instructor, KnightEDU.DBMS.Course.Schedule
+public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, KnightEDU.DBMS.Section, KnightEDU.DBMS.Course.Offering, KnightEDU.DBMS.Class, KnightEDU.DBMS.Component, KnightEDU.DBMS.Employee, KnightEDU.DBMS.Transcript.Entry, KnightEDU.DBMS.Instructor, KnightEDU.DBMS.Course.Schedule, KnightEDU.DBMS.Course.Offering.Component
 {
     /**
      *
@@ -400,15 +400,16 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public KnightEDU.Course.Offering addCourseOffering(CourseID courseID, Term term, int year, int primaryComponentID)
+    public KnightEDU.Course.Offering addCourseOffering(CourseID courseID, Term term, int year, KnightEDU.Component.Type primaryComponentType )
     {
         try {
             PreparedStatement psInsert;
-            psInsert = conn.prepareStatement("insert into CourseOffered (courseID, term, yearOffered) values (?,?,?)");
+            psInsert = conn.prepareStatement("insert into CourseOfferings (courseID, term, yearOffered, primaryComponentID) values (?,?,?,?)");
             psInsert.setString(1,courseID.toString());
             psInsert.setString(2,term.toString());
             psInsert.setInt(3,year);
-            //psInsert.setInt(4,primaryComponentID);
+            KnightEDU.Component component = addComponent(primaryComponentType);
+            psInsert.setInt(4, primaryComponentType.ordinal());
             psInsert.executeUpdate();
         }
         catch (SQLException ex) {
@@ -1264,6 +1265,22 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public void addCourseOfferingComponent(CourseID courseID, Term term, int year, int componentID)
+    {
+//        PreparedStatement psInsert;
+//        psInsert = conn.prepareStatement("INSERT INTO CourseSchedules(courseid, term, yearparity) values (?,?,?) ");
+//        psInsert.setString(1,courseID.toString());
+//        psInsert.setInt(2,yearParity.ordinal());
+//        psInsert.setInt(3,term.ordinal());
+//        psInsert.executeUpdate();
+//        r_val = new Course.Schedule(term, yearParity);
+    }
+
+    public void removeCourseOfferingComponent(CourseID courseID, Term term, int year, int componentID)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

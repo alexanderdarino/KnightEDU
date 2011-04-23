@@ -1,5 +1,6 @@
 package KnightEDU.DBMS;
 
+import KnightEDU.Component.Type;
 import KnightEDU.CourseID;
 import KnightEDU.DBMS.SQL.Query;
 import KnightEDU.Credits;
@@ -75,7 +76,7 @@ public interface Course {
          * @param primaryComponentID
          * @return
          */
-        public KnightEDU.Course.Offering addCourseOffering(CourseID courseID, Term term, int year, int primaryComponentID);
+        public KnightEDU.Course.Offering addCourseOffering(CourseID courseID, Term term, int year, KnightEDU.Component.Type primaryComponentType);
         /**
          *
          * @param courseID
@@ -117,6 +118,12 @@ public interface Course {
          * @return
          */
         public KnightEDU.DBMS.Query.Course.Offering queryCourseOffering();
+
+        public static interface Component
+        {
+            public void addCourseOfferingComponent(CourseID courseID, Term term, int year, int componentID);
+            public void removeCourseOfferingComponent(CourseID courseID, Term term, int year, int componentID);
+        }
     }
     public static interface Schedule
     {
