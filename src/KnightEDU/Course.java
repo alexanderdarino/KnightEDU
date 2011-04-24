@@ -143,7 +143,7 @@ public class Course
      * Returns the course identifier.
      * @return the courses identifier
      */
-    public CourseID getId()
+    public CourseID getID()
     {
         return id;
     }
@@ -167,7 +167,7 @@ public class Course
                 {
                     int compareTo = o1.getTerm().compareTo(o2.getTerm());
                     if (compareTo != 0) return compareTo;
-                    return o1.getYearPairity().compareTo(o2.getYearPairity());
+                    return o1.getYearParity().compareTo(o2.getYearParity());
                 }
             });
         this.schedules.addAll(schedules);
@@ -191,7 +191,7 @@ public class Course
      */
     public static Course create(CourseID id, String name, String description, Credits credits, Grade.Type gradeType, Prerequisites prerequisites, Set<Schedule> schedules)
     {
-        if (id == null || name == null || description == null || credits == null || gradeType == null || schedules == null || schedules.isEmpty()) {
+        if (id == null || name == null || description == null || credits == null || gradeType == null || schedules == null) {
             return null;
         }
         return new Course(id, name, description, credits, gradeType, prerequisites, schedules);
@@ -208,7 +208,7 @@ public class Course
         {
             if (schedule.getTerm() == currentTerm)
             {
-                yearParities.add(schedule.getYearPairity());
+                yearParities.add(schedule.getYearParity());
             }
             else
             {
@@ -226,7 +226,7 @@ public class Course
                 lastTerm = currentTerm;
                 currentTerm = schedule.getTerm();
                 yearParities = new TreeSet();
-                yearParities.add(schedule.getYearPairity());
+                yearParities.add(schedule.getYearParity());
                 builder.append(" ");
             }
         }
@@ -325,8 +325,8 @@ public class Course
     @Override
     public String toString()
     {
-        return getName() + "(Description: " + getDescription() + ", " + "Credits: " + getCredits() + ", Grade Type: " + getGradeType() + ", Prerequisites: " + getPrerequisites() + ", Offered: " + scheduleString() + ")";
-
+        //return getName() + "(Description: " + getDescription() + ", " + "Credits: " + getCredits() + ", Grade Type: " + getGradeType() + ", Prerequisites: " + getPrerequisites() + ", Offered: " + scheduleString() + ")";
+        return getID() + ": " + getName();
     }
 
     public static class Schedule
@@ -345,7 +345,7 @@ public class Course
             return term;
         }
 
-        public YearParity getYearPairity()
+        public YearParity getYearParity()
         {
             return yearPairity;
         }

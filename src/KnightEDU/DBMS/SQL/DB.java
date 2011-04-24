@@ -132,6 +132,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
 
     public Course addCourse(String courseID, String name, String description, Credits credits, Type gradeType)
     {
+        if (courseID == null || name == null || description == null || credits == null || gradeType == null) return null;
         try {
             PreparedStatement psInsert = null;
             String sql = "insert into COURSES(ID, NAME, DESCRIPTION, CREDITSMIN, CREDITSMAX, PREREQUISITES) values (?,?,?,?,?,?)";
@@ -157,7 +158,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             Statement s;
             ResultSet myCourses;
             s = conn.createStatement();
-            String queryString = "select * from COURSE C WHERE C.ID = ";
+            String queryString = "select * from COURSES C WHERE C.ID = ";
             queryString = queryString + "'" + courseID + "'";
             myCourses = s.executeQuery(queryString);
             while (myCourses.next())
@@ -180,7 +181,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             Statement s;
             ResultSet myCourses;
             s = conn.createStatement();
-            String queryString = "select * from COURSE C WHERE C.ID = ";
+            String queryString = "select * from COURSES C WHERE C.ID = ";
             queryString = queryString + "'" + courseID + "'";
             myCourses = s.executeQuery(queryString);
             while (myCourses.next())
@@ -208,14 +209,14 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             PreparedStatement psUpdate;
-            psUpdate = conn.prepareStatement("update COURSE SET NAME = ?, DESCRIPTION = ?, CREDITSMIN = ?, CREDITSMAX = ?, PREREQUISITES = 'NONE'  WHERE ID = ?");
-            //psUpdate.setString(1,course.getId().toString());
+            psUpdate = conn.prepareStatement("update COURSES SET NAME = ?, DESCRIPTION = ?, CREDITSMIN = ?, CREDITSMAX = ?, PREREQUISITES = 'NONE'  WHERE ID = ?");
+            //psUpdate.setString(1,course.getID().toString());
             psUpdate.setString(1,course.getName().toString());
             psUpdate.setString(2,course.getDescription().toString());
             psUpdate.setInt(3,course.getCredits().getMinCredits());
             psUpdate.setInt(4,course.getCredits().getMaxCredits());
             
-            psUpdate.setString(5,course.getId().toString());
+            psUpdate.setString(5,course.getID().toString());
             psUpdate.executeUpdate();
         }
         catch (SQLException ex) {
@@ -229,7 +230,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
     {
         try {
             PreparedStatement psDelete;
-            psDelete = conn.prepareStatement("delete FROM COURSE C WHERE C.ID = (?)");
+            psDelete = conn.prepareStatement("delete FROM COURSES C WHERE C.ID = (?)");
             psDelete.setString(1,courseID);
             psDelete.executeUpdate();
         }
@@ -1180,13 +1181,13 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             PreparedStatement psInsert;
             psInsert = conn.prepareStatement("insert into CourseSchedules(courseid, term, yearparity) values (?,?,?) ");
             psInsert.setString(1,courseID.toString());
-            psInsert.setInt(2,yearParity.ordinal());
-            psInsert.setInt(3,term.ordinal());
+            psInsert.setInt(3,yearParity.ordinal());
+            psInsert.setInt(2,term.ordinal());
             psInsert.executeUpdate();
             r_val = new Course.Schedule(term, yearParity);
         }
         catch (SQLException ex) {
-            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
         return r_val;
     }

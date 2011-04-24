@@ -94,7 +94,7 @@ public class Query {
                 if (!KnightEDU.CourseID.PNS.isValidSuffix(suffix) || suffix.length() > SUFFIX_LENGTH) throw new InvalidSuffixException();
 
                 //suffixQuery = "suffix = " + suffix;
-                suffixQuery = "UPPER(SUBSTR(ID, 8, 8)) = UPPER('" + suffix + "')";
+                suffixQuery = "UPPER(SUBSTR(ID, 8, 1)) = UPPER('" + suffix + "')";
                 return this;
             }
 
@@ -142,7 +142,7 @@ public class Query {
             {
                 if (!KnightEDU.CourseID.PNS.isValidNumber(number) || number.length() != NUMBER_LENGTH) throw new InvalidNumberException();
 
-                numberQuery = "SUBSTR(ID, 4, 7) " + operation + " '" + number + "'";
+                numberQuery = "SUBSTR(ID, 4, 4) " + operation + " '" + number + "'";
                 return this;
             }
 
@@ -184,8 +184,8 @@ public class Query {
 
                 StringBuilder queryBuilder = new StringBuilder();
                 if (prefixQuery.length() > 0) queryBuilder.append(prefixQuery);
-                if (numberQuery.length() > 0) queryBuilder.append(" AND ").append(numberQuery);
-                if (suffixQuery.length() > 0) queryBuilder.append(" AND ").append(suffixQuery);
+                if (numberQuery.length() > 0) queryBuilder.append(queryBuilder.length() > 0 ? " AND " : "").append(numberQuery);
+                if (suffixQuery.length() > 0) queryBuilder.append(queryBuilder.length() > 0 ? " AND " : "").append(suffixQuery);
                 courseQuery.setCourseIDQuery(queryBuilder.toString());
                 return courseQuery;
             }
