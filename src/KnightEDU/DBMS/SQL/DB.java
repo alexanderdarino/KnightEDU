@@ -353,9 +353,7 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
 
     public Query.Section querySection()
     {
-        //query("Section", whereClause, groupByClause, havingClause);
-        throw new UnsupportedOperationException("Not supported yet.");
-        //return null;
+        return new Query.Section(this);
     }
 
     public boolean containsSection(String sectionID)

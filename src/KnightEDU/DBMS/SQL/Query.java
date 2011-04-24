@@ -1,5 +1,6 @@
 package KnightEDU.DBMS.SQL;
 
+import KnightEDU.Days;
 import KnightEDU.Grade.Type;
 import KnightEDU.Prerequisites;
 import KnightEDU.Term;
@@ -415,20 +416,86 @@ public class Query {
     /**
      *
      */
-    public static class Section implements KnightEDU.DBMS.Query.Section
+    public static class Section implements KnightEDU.DBMS.Query.Section, KnightEDU.DBMS.Query.Section.BR
     {
         KnightEDU.DBMS.SQL.DB db;
+        String daysQuery = "", startTimeQuery = "", endTimeQuery = "", building = "", room = "";
+
 
         protected Section( KnightEDU.DBMS.SQL.DB db)
         {
             this.db = db;
         }
-//        public KnightEDU.Section getSection(int sectionID) {
-//            ResultSet resultSet = db.query("Sections", "id=" + sectionID, "", "");
-//
-//            KnightEDU.Section r_val = new KnightEDU.Section(sectionID, resultSet.getString("days"))
-//        }
 
+        public Query.Section specifyDays(Days days)
+        {
+
+            daysQuery = "SUBSTR(s.days, 1, " + days.toString().length() + ") = '" + days.toString() + "'";
+            return this;
+        }
+
+        public Query.Section startTime(int startTime)
+        {
+            startTimeQuery = "s.timeStart = " + startTime;
+            return this;
+        }
+
+        public Query.Section endTime(int endTime)
+        {
+            endTimeQuery = "s.timeFinish = " + endTime;
+            return this;
+        }
+
+        public Query.Section specifyBuilding(String building)
+        {
+            this.building = building;
+            return this;
+
+        }
+
+        public Query.Section specifyRoom(String room)
+        {
+            this.room = room;
+            return this;
+        }
+
+        public Set<KnightEDU.Section> invoke()
+        {
+            StringBuilder queryBuilder = new StringBuilder();
+            queryBuilder.append(daysQuery);
+            if (!startTimeQuery.isEmpty()) queryBuilder.append((queryBuilder.length() > 0 ? " AND " : "")).append(startTimeQuery);
+            if (!endTimeQuery.isEmpty()) queryBuilder.append((queryBuilder.length() > 0 ? " AND " : "")).append(endTimeQuery);
+            if (building.isEmpty())
+            {
+                if (!room.isEmpty())
+                {
+                    queryBuilder.append(queryBuilder.length() > 0 ? " AND " : "").append("s.location LIKE '%-").append(room).append("'");
+                }
+            }
+            else
+            {
+                queryBuilder.append(queryBuilder.length() > 0 ? " AND " : "").append("s.location = '").append(building.toUpperCase()).append("-");
+                if (room.isEmpty())
+                {
+                    queryBuilder.append("%'");
+                }
+                else
+                    queryBuilder.append(room).append("'");
+            }
+
+            ResultSet results = db.query("Sections s", queryBuilder.toString(), "","");
+            Set<KnightEDU.Section> r_val = new HashSet();
+            try {
+                while (results.next()) {
+                    r_val.add(KnightEDU.Section.create(results.getInt("ID"), Days.valueOf(results.getString("days").trim()), results.getInt("timeStart"), results.getInt("timeFinish"), results.getString("location")));
+                }
+            }
+            catch (SQLException ex) {
+                Logger.getLogger(Query.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            return r_val;
+        }
     }
 
     /**

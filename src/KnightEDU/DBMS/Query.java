@@ -17,7 +17,14 @@ public interface Query {
 
     public static interface Section
     {
-//        public KnightEDU.Section getSection(int classID);
+        public Query.Section specifyDays(KnightEDU.Days days);
+        public Query.Section startTime(int startTime);
+        public Query.Section endTime(int endTime);
+        public static interface BR
+        {
+            public Query.Section specifyBuilding(String building);
+            public Query.Section specifyRoom(String room);
+        }
     }
 
     public static interface Component
