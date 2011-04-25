@@ -422,6 +422,15 @@ public class Query {
         String daysQuery = "", startTimeQuery = "", endTimeQuery = "", building = "", room = "";
 
 
+
+        public void reset()
+        {
+            daysQuery = "";
+            startTimeQuery = "";
+            endTimeQuery = "";
+            building = "";
+            room = "";
+        }
         protected Section( KnightEDU.DBMS.SQL.DB db)
         {
             this.db = db;
@@ -430,7 +439,8 @@ public class Query {
         public Query.Section specifyDays(Days days)
         {
 
-            daysQuery = "SUBSTR(s.days, 1, " + days.toString().length() + ") = '" + days.toString() + "'";
+            //daysQuery = "SUBSTR(s.days, 1, " + days.toString().length() + ") = '" + days.toString() + "'";
+            daysQuery = "s.days = '" + days.toString() + "'";
             return this;
         }
 
@@ -465,29 +475,31 @@ public class Query {
             queryBuilder.append(daysQuery);
             if (!startTimeQuery.isEmpty()) queryBuilder.append((queryBuilder.length() > 0 ? " AND " : "")).append(startTimeQuery);
             if (!endTimeQuery.isEmpty()) queryBuilder.append((queryBuilder.length() > 0 ? " AND " : "")).append(endTimeQuery);
+
             if (building.isEmpty())
             {
                 if (!room.isEmpty())
                 {
-                    queryBuilder.append(queryBuilder.length() > 0 ? " AND " : "").append("s.location LIKE '%-").append(room).append("'");
+                    queryBuilder.append(queryBuilder.length() > 0 ? " AND " : "").append("s.location LIKE '%-").append(room).append("%'");
                 }
             }
             else
             {
-                queryBuilder.append(queryBuilder.length() > 0 ? " AND " : "").append("s.location = '").append(building.toUpperCase()).append("-");
+                queryBuilder.append(queryBuilder.length() > 0 ? " AND " : "").append("s.location LIKE '").append(building.toUpperCase()).append("-");
                 if (room.isEmpty())
                 {
                     queryBuilder.append("%'");
                 }
                 else
-                    queryBuilder.append(room).append("'");
+                    queryBuilder.append(room).append("%'");
             }
 
             ResultSet results = db.query("Sections s", queryBuilder.toString(), "","");
+//            ResultSet results = db.query("Sections s", "SUBSTR(s.days,1,3) = 'MWF' AND s.location LIKE 'CL1-%'", "","");
             Set<KnightEDU.Section> r_val = new HashSet();
             try {
                 while (results.next()) {
-                    r_val.add(KnightEDU.Section.create(results.getInt("ID"), Days.valueOf(results.getString("days").trim()), results.getInt("timeStart"), results.getInt("timeFinish"), results.getString("location")));
+                    r_val.add(KnightEDU.Section.create(results.getInt("ID"), Days.valueOf(results.getString("days").trim()), results.getInt("timeStart"), results.getInt("timeFinish"), results.getString("location").trim()));
                 }
             }
             catch (SQLException ex) {

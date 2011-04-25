@@ -6,6 +6,8 @@ package KnightEDU;
  */
 public class Class
 {
+
+
     /**
 
      */

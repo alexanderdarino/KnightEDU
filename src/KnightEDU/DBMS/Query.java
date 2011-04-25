@@ -20,6 +20,7 @@ public interface Query {
         public Query.Section specifyDays(KnightEDU.Days days);
         public Query.Section startTime(int startTime);
         public Query.Section endTime(int endTime);
+        public Set<KnightEDU.Section> invoke();
         public static interface BR
         {
             public Query.Section specifyBuilding(String building);

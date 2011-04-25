@@ -30,7 +30,7 @@ public interface Section {
      * @param sectionID
      * @return
      */
-    public KnightEDU.Section getSection(String sectionID);
+    public KnightEDU.Section getSection(int sectionID);
     /**
      *
      * @return

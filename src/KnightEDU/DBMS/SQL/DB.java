@@ -300,10 +300,10 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public KnightEDU.Section getSection(String sectionID)
+    public KnightEDU.Section getSection(int sectionID)
     {
         try {
-            int sectionid = Integer.parseInt(sectionID);
+            //int sectionid = Integer.parseInt(sectionID);
             Statement s;
             ResultSet mySection;
             s = conn.createStatement();
@@ -319,27 +319,27 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
                 String location = mySection.getString("location");
                 KnightEDU.Section thisSection = null;
                 if (days.equals("U"))
-                    thisSection = thisSection.create(sectionid, Days.U, timeStart, timeFinish, location);
+                    thisSection = thisSection.create(sectionID, Days.U, timeStart, timeFinish, location);
                 else if (days.equals("M"))
-                    thisSection = thisSection.create(sectionid, Days.M, timeStart, timeFinish, location);
+                    thisSection = thisSection.create(sectionID, Days.M, timeStart, timeFinish, location);
                 else if (days.equals("T"))
-                    thisSection = thisSection.create(sectionid, Days.T, timeStart, timeFinish, location);
+                    thisSection = thisSection.create(sectionID, Days.T, timeStart, timeFinish, location);
                 else if (days.equals("W"))
-                    thisSection = thisSection.create(sectionid, Days.W, timeStart, timeFinish, location);
+                    thisSection = thisSection.create(sectionID, Days.W, timeStart, timeFinish, location);
                 else if (days.equals("R"))
-                    thisSection = thisSection.create(sectionid, Days.R, timeStart, timeFinish, location);
+                    thisSection = thisSection.create(sectionID, Days.R, timeStart, timeFinish, location);
                 else if (days.equals("F"))
-                    thisSection = thisSection.create(sectionid, Days.F, timeStart, timeFinish, location);
+                    thisSection = thisSection.create(sectionID, Days.F, timeStart, timeFinish, location);
                 else if (days.equals("S"))
-                    thisSection = thisSection.create(sectionid, Days.S, timeStart, timeFinish, location);
+                    thisSection = thisSection.create(sectionID, Days.S, timeStart, timeFinish, location);
                 else if (days.equals("MW"))
-                    thisSection = thisSection.create(sectionid, Days.MW, timeStart, timeFinish, location);
+                    thisSection = thisSection.create(sectionID, Days.MW, timeStart, timeFinish, location);
                 else if (days.equals("MWF"))
-                    thisSection = thisSection.create(sectionid, Days.MWF, timeStart, timeFinish, location);
+                    thisSection = thisSection.create(sectionID, Days.MWF, timeStart, timeFinish, location);
                 else if (days.equals("TR"))
-                    thisSection = thisSection.create(sectionid, Days.TR, timeStart, timeFinish, location);
+                    thisSection = thisSection.create(sectionID, Days.TR, timeStart, timeFinish, location);
                 else if (days.equals("TBA"))
-                    thisSection = thisSection.create(sectionid, Days.TBA, timeStart, timeFinish, location);
+                    thisSection = thisSection.create(sectionID, Days.TBA, timeStart, timeFinish, location);
                 return thisSection;
                //TODO
             }
@@ -440,8 +440,8 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
             Statement s;
             ResultSet myCourseOffering;
             s = conn.createStatement();
-            String queryString = "select * from CourseOfferings C WHERE C.COURSEID = '";
-            queryString = queryString + courseID.toString() + "'";
+            String queryString = "select * from CourseOfferings C WHERE UPPER(C.COURSEID) = UPPER('";
+            queryString = queryString + courseID.toString() + "')";
             queryString = queryString + " AND C.TERM = ";
             queryString = queryString + term.ordinal();
             queryString = queryString + " AND C.yearOffered = ";
@@ -514,12 +514,14 @@ public class DB implements KnightEDU.DBMS.Course, KnightEDU.DBMS.CourseID.PNS, K
         return new Query.Course.Offering(this);
     }
 
-    public Class addClass(int classID, int sectionID, int sectionNumber, int capacity, int instructorID)
+    public Class addClass(int sectionID, int sectionNumber, int capacity, int instructorID)
     {
         try {
+
+//            String queryString = "select MAX (S.id) from SECTIONS S";
             PreparedStatement psInsert;
-            psInsert = conn.prepareStatement("insert into CLASSES(id, sectionID, sectionNum, instructorID) values (?,?,?,?) ");
-            psInsert.setInt(1,classID);
+            psInsert = conn.prepareStatement("insert into CLASSES(id, sectionID, sectionNum, instructorID) values (SELECT MAX(id) FROM CLASSES,?,?,?) ");
+//            psInsert.setInt(1,classID);
             psInsert.setInt(2,sectionID);
             psInsert.setInt(3,sectionNumber);
             psInsert.setInt(4,instructorID);

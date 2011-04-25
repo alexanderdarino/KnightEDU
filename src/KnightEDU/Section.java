@@ -106,6 +106,12 @@ public class Section
      */
     protected int sectionID;
 
+    @Override
+    public String toString()
+    {
+        return sectionID + ": " + days + " " + timeStart + " - " + timeEnd + " " + location;
+    }
+
     /**
 
      @return

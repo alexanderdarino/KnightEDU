@@ -266,6 +266,12 @@ public class Course
             this.primaryComponentID = primaryComponentID;
         }
 
+        @Override
+        public String toString()
+        {
+            return courseID + " " + term + " " + year;
+        }
+
         /**
          * The course this class covers
          */
